@@ -32,7 +32,10 @@ class StudentUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required',
+            'email'  => 'required',
+            'password'  => 'required',
+            'user_information'  => 'required'
         ];
     }
 }

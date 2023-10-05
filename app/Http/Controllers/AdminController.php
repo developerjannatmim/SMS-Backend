@@ -4,6 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AdminRequest;
 use App\Http\Requests\AdminUpdateRequest;
+use App\Http\Requests\ParentRequest;
+use App\Http\Requests\ParentUpdateRequest;
+use App\Http\Requests\StudentRequest;
+use App\Http\Requests\StudentUpdateRequest;
+use App\Http\Requests\TeacherRequest;
+use App\Http\Requests\TeacherUpdateRequest;
 use App\Models\Classes;
 use App\Models\ClassRoom;
 use App\Models\Exam;
@@ -82,420 +88,191 @@ class AdminController extends Controller
 
 
   //Student
-  public function student_list(Request $request)
+  public function student_list(Request $request): JsonResponse
   {
-    $search = $request['search'] ?? '';
-
-    if($search != ''){
-      $students = User::where(function ($query) use($search) {
-        $query->where('name', 'LIKE', "%{$search}%")
-        ->where('school_id', auth()->user()->school_id)
-        ->where('role_id', 3);
-      })->orWhere(function ($query) use($search) {
-        $query->where('email', 'LIKE', "%{$search}%")
-        ->where('school_id', auth()->user()->school_id)
-        ->where('role_id', 3);
-      })->paginate(5);
-
-    }else {
-      $students = User::get()->where('role_id', 3)->where('school_id', auth()->user()->school_id);
-    }
-    return view('admin.student.student_list', ['students' => $students, 'search' => $search]);
-  }
-
-  public function student_create()
-  {
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    $sections = Section::get()->where('school_id', auth()->user()->school_id);
-    return view('admin.student.add_student', ['classes' => $classes, 'sections' => $sections]);
-  }
-
-  public function student_store(Request $request)
-  {
-    $validated = $request->validate([
-      'name' => 'required',
-      'email' => 'required|email|unique:users',
-      'password' => 'required|min:6',
-      'class_id' => 'required',
-      'section_id' => 'required',
-      'photo' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-      'gender' => 'required',
-      'blood_group' => 'required',
-      'birthday' => 'required',
-      'phone' => 'required',
-      'address' => 'required'
-    ],[
-      'name.required' => 'Name field is required.',
-      'password.required' => 'Password field is required.',
-      'email.required' => 'Email field is required.',
-      'email.email' => 'Email field must be email address.'
-  ]);
-
-  $validated['password'] = bcrypt($validated['password']);
-
-    if (!empty($validated['photo'])) {
-      $file = $validated['photo'];
-      $filename = time() . '-' . $file->getClientOriginalExtension();
-      $file->move('students-images/', $filename);
-      $photo = $filename;
-    } else {
-      $photo = '';
-    }
-
-    $info = array(
-      'gender' => $validated['gender'],
-      'blood_group' => $validated['blood_group'],
-      'birthday' => date($validated['birthday']),
-      'phone' => $validated['phone'],
-      'address' => $validated['address'],
-      'photo' => $photo
-    );
-
-    $validated['user_information'] = json_encode($info);
-
-    User::create([
-      'name' => $validated['name'],
-      'email' => $validated['email'],
-      'password' => $validated['password'],
-      'class_id' => $validated['class_id'],
-      'section_id' => $validated['section_id'],
-      'role_id' => '3',
-      'school_id' => auth()->user()->school_id,
-      'user_information' => $validated['user_information']
+    return response()->json([
+      'data' => [
+        'student' => User::paginate(
+          $perPage = $request->query('perPage', 5),
+          $column = [
+            'id',
+            'name',
+            'email',
+            'user_information'
+          ],
+        ),
+      ],
+      'message' => 'student List Created',
     ]);
-
-    return redirect()->route('admin.student')->with('success', 'Student Added Successfully');
   }
 
-  public function student_edit(string $id)
+
+
+  public function student_store(StudentRequest $request)
   {
-    $student = User::find($id);
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    $sections = Section::get()->where('school_id', auth()->user()->school_id);
-    return view('admin.student.edit_student', ['classes' => $classes, 'sections' => $sections, 'student' => $student]);
-  }
-
-  public function student_update(Request $request, string $id)
-  {
-    $data = $request->all();
-
-    if (!empty($data['photo'])) {
-      $file = $data['photo'];
-      $filename = time() . '-' . $file->getClientOriginalExtension();
-      $file->move('/images/student/', $filename);
-      $photo = $filename;
-    } else {
-      $user_info = User::where('id', $id)->value('user_information');
-      $exsisting_filename = json_decode($user_info)->photo;
-      if ($exsisting_filename !== '') {
-        $photo = $exsisting_filename;
-      } else {
-        $photo = '';
-      }
-    }
-
-    $info = array(
-      'gender' => $data['gender'],
-      'blood_group' => $data['blood_group'],
-      'birthday' => date($data['birthday']),
-      'phone' => $data['phone'],
-      'address' => $data['address'],
-      'photo' => $photo
-    );
-
-    $data['user_information'] = json_encode($info);
-    User::where('id', $id)->update([
-      'name' => $data['name'],
-      'email' => $data['email'],
-      'section_id' => $data['section_id'],
-      'class_id' => $data['class_id'],
-      'user_information' => $data['user_information']
+    return response()->json([
+      'data' => [
+        'student' => User::create($request->validated()),
+      ],
+      'message' => 'student store successful.',
     ]);
-    return redirect()->route('admin.student')->with('success', 'Student Updated Successfully');
   }
 
-  public function student_destroy(string $id)
+  public function student_Show(User $student)
   {
-    $student = User::find($id);
+    return response()->json([
+      'data' => [
+        'student' => $student,
+      ],
+      'message' => 'student show successful.',
+    ]);
+  }
+
+  public function student_update(StudentUpdateRequest $request, User $student)
+  {
+    $student->update($request->validated());
+    return response()->json([
+      'data' => [
+        'student' => $student,
+      ],
+      'message' => 'student update successful.',
+    ]);
+  }
+
+  public function student_destroy(User $student)
+  {
     $student->delete();
-    $student = User::get()->where('role_id', 3)->where('school_id', auth()->user()->school_id);
-    return redirect()->back();
+    return response()->json([
+      'data' => [
+        'student' => $student,
+      ],
+      'message' => 'student deleted Successful.',
+    ]);
   }
 
   //Guardian
 
-  public function guardian_list(Request $request)
+  public function guardian_list(Request $request): JsonResponse
   {
-    $search = $request['search'] ?? '';
-
-    if($search != ''){
-      $parents = User::where(function ($query) use($search) {
-        $query->where('name', 'LIKE', "%{$search}%")
-        ->where('school_id', auth()->user()->school_id)
-        ->where('role_id', 4);
-      })->orWhere(function ($query) use($search) {
-        $query->where('email', 'LIKE', "%{$search}%")
-        ->where('school_id', auth()->user()->school_id)
-        ->where('role_id', 4);
-      })->paginate(5);
-
-    }else {
-      $parents = User::get()->where('role_id', 4)->where('school_id', auth()->user()->school_id);
-    }
-    return view('admin.parent.parent_list', ['parents' =>$parents, 'search' => $search]);
-
-  }
-
-  public function guardian_create()
-  {
-    $parents = User::get()->where('role_id', 4)->where('school_id', auth()->user()->school_id);
-    return view('admin.parent.add_parent', compact('parents'));
-
-  }
-
-  public function guardian_store(Request $request)
-  {
-    $validated = $request->validate([
-      'name' => 'required',
-      'email' => 'required|email|unique:users',
-      'password' => 'required|min:6',
-      'photo' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-      'gender' => 'required',
-      'blood_group' => 'required',
-      'birthday' => 'required',
-      'phone' => 'required',
-      'address' => 'required',
-      'child_name' => 'required',
-      'designation' => 'required'
-    ],[
-      'name.required' => 'Name field is required.',
-      'password.required' => 'Password field is required.',
-      'email.required' => 'Email field is required.',
-      'email.email' => 'Email field must be email address.'
-  ]);
-
-  $validated['password'] = bcrypt($validated['password']);
-
-    if (!empty($validated['photo'])) {
-      $file = $validated['photo'];
-      $filename = time() . '-' . $file->getClientOriginalExtension();
-      $file->move('parent-images/', $filename);
-      $photo = $filename;
-    } else {
-      $photo = '';
-    }
-
-    $info = array(
-      'gender' => $validated['gender'],
-      'blood_group' => $validated['blood_group'],
-      'birthday' => date($validated['birthday']),
-      'phone' => $validated['phone'],
-      'address' => $validated['address'],
-      'child_name' => $validated['child_name'],
-      'designation' => $validated['designation'],
-      'photo' => $photo
-    );
-
-    $validated['user_information'] = json_encode($info);
-    User::create([
-      'name' => $validated['name'],
-      'email' => $validated['email'],
-      'password' => $validated['password'],
-      'role_id' => '4',
-      'school_id' => auth()->user()->school_id,
-      'user_information' => $validated['user_information']
+    return response()->json([
+      'data' => [
+        'guardian' => User::paginate(
+          $perPage = $request->query('perPage', 5),
+          $column = [
+            'id',
+            'name',
+            'email',
+            'user_information'
+          ],
+        ),
+      ],
+      'message' => 'guardian List Created',
     ]);
-    return redirect()->route('admin.guardian')->with('success', 'Parent Added Successfully');
-
   }
 
-  public function guardian_edit(string $id)
+  public function guardian_store(ParentRequest $request)
   {
-    $parent = User::find($id);
-    return view('admin.parent.edit_parent', compact('parent'));
-  }
-
-  public function guardian_update(Request $request, string $id)
-  {
-    $data = $request->all();
-    if (!empty($data['photo'])) {
-      $file = $data['photo'];
-      $filename = time() . '-' . $file->getClientOriginalExtension();
-      $file->move('parent-images/', $filename);
-      $photo = $filename;
-    } else {
-      $user_info = User::where('id', $id)->value('user_information');
-      $exsisting_filename = json_decode($user_info)->photo;
-      if ($exsisting_filename !== '') {
-        $photo = $exsisting_filename;
-      } else {
-        $photo = '';
-      }
-    }
-
-    $info = array(
-      'gender' => $data['gender'],
-      'blood_group' => $data['blood_group'],
-      'birthday' => date($data['birthday']),
-      'phone' => $data['phone'],
-      'address' => $data['address'],
-      'child_name' => $data['child_name'],
-      'designation' => $data['designation'],
-      'photo' => $photo
-    );
-
-    $data['user_information'] = json_encode($info);
-    User::where('id', $id)->update([
-      'name' => $data['name'],
-      'email' => $data['email'],
-      'user_information' => $data['user_information']
+    return response()->json([
+      'data' => [
+        'parent' => User::create($request->validated()),
+      ],
+      'message' => 'parent store successful.',
     ]);
-    return redirect()->route('admin.guardian')->with('success', 'Parent Updated Successfully');
   }
 
-  public function guardian_destroy(string $id)
+  public function guardian_show(User $parent)
   {
-    $parent = User::find($id);
+    return response()->json([
+      'data' => [
+        'parent' => $parent,
+      ],
+      'message' => 'parent show successful.',
+    ]);
+  }
+
+  public function guardian_update(ParentUpdateRequest $request, User $parent)
+  {
+    $parent->update($request->validated());
+    return response()->json([
+      'data' => [
+        'parent' => $parent,
+      ],
+      'message' => 'parent update successful.',
+    ]);
+  }
+
+  public function guardian_destroy(User $parent)
+  {
     $parent->delete();
-    $parent = User::get()->where('role_id', 4)->where('school_id', auth()->user()->school_id);
-    return redirect()->back();
+    return response()->json([
+      'data' => [
+        'parent' => $parent,
+      ],
+      'message' => 'parent deleted Successful.',
+    ]);
   }
 
   //Teacher
 
-  public function teacher_list(Request $request)
+  public function teacher_list(Request $request): JsonResponse
   {
-    $search = $request['search'] ?? '';
-
-    if($search != ''){
-      $teachers = User::where(function ($query) use($search) {
-        $query->where('name', 'LIKE', "%{$search}%")
-        ->where('school_id', auth()->user()->school_id)
-        ->where('role_id', 2);
-      })->orWhere(function ($query) use($search) {
-        $query->where('email', 'LIKE', "%{$search}%")
-        ->where('school_id', auth()->user()->school_id)
-        ->where('role_id', 2);
-      })->paginate(5);
-
-    }else {
-      $teachers = User::get()->where('role_id', 2)->where('school_id', auth()->user()->school_id);
-    }
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    return view('admin.teacher.teacher_list', compact('teachers', 'classes', 'search'));
-
-  }
-
-  public function teacher_create()
-  {
-    $teachers = User::get()->where('role_id', 2)->where('school_id', auth()->user()->school_id);
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    return view('admin.teacher.add_teacher', compact('teachers', 'classes'));
-
-  }
-
-  public function teacher_store(Request $request)
-  {
-    $validated = $request->validate([
-      'name' => 'required',
-      'email' => 'required|email|unique:users',
-      'password' => 'required|min:6',
-      'photo' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-      'gender' => 'required',
-      'blood_group' => 'required',
-      'birthday' => 'required',
-      'phone' => 'required',
-      'address' => 'required',
-      'designation' => 'required'
-    ],[
-      'name.required' => 'Name field is required.',
-      'password.required' => 'Password field is required.',
-      'email.required' => 'Email field is required.',
-      'email.email' => 'Email field must be email address.'
-  ]);
-
-    if (!empty($validated['photo'])) {
-      $file = $validated['photo'];
-      $filename = time() . '-' . $file->getClientOriginalExtension();
-      $file->move('teacher-images/', $filename);
-      $photo = $filename;
-    } else {
-      $photo = '';
-    }
-
-    $info = array(
-      'gender' => $validated['gender'],
-      'blood_group' => $validated['blood_group'],
-      'birthday' => $validated['birthday'],
-      'phone' => $validated['phone'],
-      'address' => $validated['address'],
-      'designation' => $validated['designation'],
-      'photo' => $photo
-    );
-
-    $validated['user_information'] = json_encode($info);
-    User::create([
-      'name' => $validated['name'],
-      'email' => $validated['email'],
-      'password' => $validated['password'],
-      'role_id' => '2',
-      'school_id' => auth()->user()->school_id,
-      'user_information' => $validated['user_information']
+    return response()->json([
+      'data' => [
+        'teacher' => User::paginate(
+          $perPage = $request->query('perPage', 5),
+          $column = [
+            'id',
+            'name',
+            'email',
+            'user_information'
+          ],
+        ),
+      ],
+      'message' => 'teacher List Created',
     ]);
-    return redirect()->route('admin.teacher')->with('success', 'Teacher Added Successfully');
-
   }
 
-  public function teacher_edit(string $id)
+  public function teacher_store(TeacherRequest $request)
   {
-    $teacher = User::find($id);
-    $subjects = Subject::get()->where('school_id', auth()->user()->school_id);
-    return view('admin.teacher.edit_teacher', compact('teacher', 'subjects'));
-  }
-
-  public function teacher_update(Request $request, string $id)
-  {
-    $data = $request->all();
-    if (!empty($data['photo'])) {
-      $file = $data['photo'];
-      $filename = time() . '-' . $file->getClientOriginalExtension();
-      $file->move('teacher-images/', $filename);
-      $photo = $filename;
-    } else {
-      $user_info = User::where('id', $id)->value('user_information');
-      $exsisting_filename = json_decode($user_info)->photo;
-      if ($exsisting_filename !== '') {
-        $photo = $exsisting_filename;
-      } else {
-        $photo = '';
-      }
-    }
-
-    $info = array(
-      'gender' => $data['gender'],
-      'blood_group' => $data['blood_group'],
-      'birthday' => $data['birthday'],
-      'phone' => $data['phone'],
-      'address' => $data['address'],
-      'designation' => $data['designation'],
-      'photo' => $photo
-    );
-
-    $data['user_information'] = json_encode($info);
-    User::where('id', $id)->update([
-      'name' => $data['name'],
-      'email' => $data['email'],
-      'user_information' => $data['user_information']
+    return response()->json([
+      'data' => [
+        'teacher' => User::create($request->validated()),
+      ],
+      'message' => 'teacher store successful.',
     ]);
-    return redirect()->route('admin.teacher')->with('success', 'Teacher Updated Successfully');
   }
 
-  public function teacher_destroy(string $id)
+  public function teacher_show(User $teacher)
   {
-    $teacher = User::find($id);
+    return response()->json([
+      'data' => [
+        'teacher' => $teacher,
+      ],
+      'message' => 'teacher show successful.',
+    ]);
+  }
+
+  public function teacher_update(TeacherUpdateRequest $request, User $teacher)
+  {
+    $teacher->update($request->validated());
+    return response()->json([
+      'data' => [
+        'teacher' => $teacher,
+      ],
+      'message' => 'teacher update successful.',
+    ]);
+  }
+
+  public function teacher_destroy(User $teacher)
+  {
     $teacher->delete();
-    $teacher = User::get()->where('role_id', 2)->where('school_id', auth()->user()->school_id);
-    return redirect()->back();
+    $teacher->delete();
+    return response()->json([
+      'data' => [
+        'teacher' => $teacher,
+      ],
+      'message' => 'teacher deleted Successful.',
+    ]);
   }
 
   //Admin

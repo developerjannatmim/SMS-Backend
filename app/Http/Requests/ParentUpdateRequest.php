@@ -14,6 +14,16 @@ class ParentUpdateRequest extends FormRequest
         return true;
     }
 
+  /**
+   * Get the error messages for the defined validation rules.
+   *
+   * @return array
+   */
+  public function messages()
+  {
+    return [];
+  }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,7 +32,10 @@ class ParentUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required',
+            'email'  => 'required',
+            'password'  => 'required',
+            'user_information'  => 'required'
         ];
     }
 }

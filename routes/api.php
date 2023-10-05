@@ -34,101 +34,124 @@ Route::controller(AdminController::class)->group(function () {
       Route::get('', 'admin_destroy');
     });
   });
-  // ->name('admin.admin');
-  // Route::get('admin/admin/create', 'admin_create')->name('admin.admin.create');
-  // ->name('admin.admin.store');
-  // ->name('admin.admin.edit');
-  // ->name('admin.admin.update');
-  // ->name('admin.admin.delete');
 
   //Student users route
-  // Route::get('admin/student', 'student_list')->name('admin.student');
-  // Route::get('admin/student/create', 'student_create')->name('admin.student.create');
-  // Route::post('admin/student', 'student_store')->name('admin.student.store');
-  // Route::get('admin/student/edit/{id}', 'student_edit')->name('admin.student.edit');
-  // Route::post('admin/student/{id}', 'student_update')->name('admin.student.update');
-  // Route::get('admin/student/delete/{id}', 'student_destroy')->name('admin.student.delete');
+  Route::group(['prefix' => 'students'], function () {
+    Route::get('', 'student_list');
+    Route::post('', 'student_store');
+    Route::group(['prefix' => '{student}'], function () {
+      Route::get('', 'student_show');
+      Route::put('', 'student_update');
+      Route::get('', 'student_destroy');
+    });
+  });
 
   //Parent users route
-  // Route::get('admin/guardian', 'guardian_list')->name('admin.guardian');
-  // Route::get('admin/guardian/create', 'guardian_create')->name('admin.guardian.create');
-  // Route::post('admin/guardian', 'guardian_store')->name('admin.guardian.store');
-  // Route::get('admin/guardian/edit/{id}', 'guardian_edit')->name('admin.guardian.edit');
-  // Route::post('admin/guardian/{id}', 'guardian_update')->name('admin.guardian.update');
-  // Route::get('admin/guardian/delete/{id}', 'guardian_destroy')->name('admin.guardian.delete');
+  Route::group(['prefix' => 'guardians'], function () {
+    Route::get('', 'guardian_list');
+    Route::post('', 'guardian_store');
+    Route::group(['prefix' => '{guardian}'], function () {
+      Route::get('', 'guardian_show');
+      Route::put('', 'guardian_update');
+      Route::get('', 'guardian_destroy');
+    });
+  });
 
   //Teacher users route
-  // Route::get('admin/teacher', 'teacher_list')->name('admin.teacher');
-  // Route::get('admin/teacher/create', 'teacher_create')->name('admin.teacher.create');
-  // Route::post('admin/teacher', 'teacher_store')->name('admin.teacher.store');
-  // Route::get('admin/teacher/edit/{id}', 'teacher_edit')->name('admin.teacher.edit');
-  // Route::post('admin/teacher/{id}', 'teacher_update')->name('admin.teacher.update');
-  // Route::get('admin/teacher/delete/{id}', 'teacher_destroy')->name('admin.teacher.delete');
+  Route::group(['prefix' => 'teachers'], function () {
+    Route::get('', 'teacher_list');
+    Route::post('', 'teacher_store');
+    Route::group(['prefix' => '{teacher}'], function () {
+      Route::get('', 'teacher_show');
+      Route::put('', 'teacher_update');
+      Route::get('', 'teacher_destroy');
+    });
+  });
 
   //Routine routes
-  // Route::get('admin/routine', 'routine')->name('admin.routine');
-  // Route::get('admin/routine/create', 'create_routine')->name('admin.routine.create');
-  // Route::post('admin/routine/', 'store_routine')->name('admin.routine.store');
-  // Route::get('admin/routine/edit/{id}', 'edit_routine')->name('admin.routine.edit');
-  // Route::post('admin/routine/update/{id}', 'update_routine')->name('admin.routine.update');
-  // Route::get('admin/routine/delete/{id}', 'routine_destroy')->name('admin.routine.delete');
+  Route::group(['prefix' => 'routines'], function () {
+    Route::get('', 'routine_list');
+    Route::post('', 'routine_store');
+    Route::group(['prefix' => '{routine}'], function () {
+      Route::get('', 'routine_show');
+      Route::put('', 'routine_update');
+      Route::get('', 'routine_destroy');
+    });
+  });
 
   //School route
   // Route::get('admin/school/info', 'school_edit')->name('admin.school.info');
   // Route::post('admin/school/update', 'school_update')->name('admin.school.update');
 
   //Marks route
-  // Route::get('admin/marks', 'marks')->name('admin.marks');
-  // Route::get('admin/marks/create', 'create_marks')->name('admin.marks.create');
-  // Route::post('admin/marks/', 'store_marks')->name('admin.marks.store');
-  // Route::get('admin/marks/edit/{id}', 'edit_marks')->name('admin.marks.edit');
-  // Route::post('admin/marks/update/{id}', 'update_marks')->name('admin.marks.update');
-  // Route::get('admin/marks/delete/{id}', 'marks_destroy')->name('admin.marks.delete');
+  Route::group(['prefix' => 'marks'], function () {
+    Route::get('', 'marks_list');
+    Route::post('', 'marks_store');
+    Route::group(['prefix' => '{marks}'], function () {
+      Route::get('', 'marks_show');
+      Route::put('', 'marks_update');
+      Route::get('', 'marks_destroy');
+    });
+  });
 
   //Exam route
-  // Route::get('admin/exam', 'examList')->name('admin.exam');
-  // Route::get('admin/exam_create', 'createExam')->name('admin.exam.create');
-  // Route::post('admin/exam', 'examStore')->name('admin.store.exam');
-  // Route::get('admin/exam/{id}', 'editExam')->name('admin.edit.exam');
-  // Route::post('admin/exam/{id}', 'examUpdate')->name('admin.exam.update');
-  // Route::get('admin/exam/delete/{id}', 'examDelete')->name('admin.exam.delete');
-  // Route::get('admin/exam_list_by_class/{id}', 'classWiseExam')->name('admin.class_wise_exam_list');
+  Route::group(['prefix' => 'exams'], function () {
+    Route::get('', 'exam_list');
+    Route::post('', 'exam_store');
+    Route::group(['prefix' => '{exam}'], function () {
+      Route::get('', 'exam_show');
+      Route::put('', 'exam_update');
+      Route::get('', 'exam_destroy');
+    });
+  });
 
   //Grade routes
-  // Route::get('admin/grade', 'gradeList')->name('admin.grade');
-  // Route::get('admin/grade_create', 'createGrade')->name('admin.grade.create');
-  // Route::post('admin/grade', 'gradeStore')->name('admin.store.grade');
-  // Route::get('admin/grade/{id}', 'editGrade')->name('admin.edit.grade');
-  // Route::post('admin/grade/{id}', 'gradeUpdate')->name('admin.grade.update');
-  // Route::get('admin/grade/delete/{id}', 'gradeDelete')->name('admin.grade.delete');
+  Route::group(['prefix' => 'grades'], function () {
+    Route::get('', 'grade_list');
+    Route::post('', 'grade_store');
+    Route::group(['prefix' => '{grade}'], function () {
+      Route::get('', 'grade_show');
+      Route::put('', 'grade_update');
+      Route::get('', 'grade_destroy');
+    });
+  });
 
   //Subject routes
-  // Route::get('admin/subject', 'subject_list')->name('admin.subject');
-  // Route::get('admin/subject/create', 'create_subject')->name('admin.subject.create');
-  // Route::post('admin/subject', 'subject_store')->name('admin.store.subject');
-  // Route::get('admin/subject/{id}', 'edit_subject')->name('admin.edit.subject');
-  // Route::post('admin/subject/{id}', 'subject_update')->name('admin.subject.update');
-  // Route::get('admin/subject/delete/{id}', 'subject_destory')->name('admin.subject.delete');
+  Route::group(['prefix' => 'subjects'], function () {
+    Route::get('', 'subject_list');
+    Route::post('', 'subject_store');
+    Route::group(['prefix' => '{subject}'], function () {
+      Route::get('', 'subject_show');
+      Route::put('', 'subject_update');
+      Route::get('', 'subject_destroy');
+    });
+  });
 
   //Syllabus routes
-  // Route::get('admin/syllabus', 'syllabus')->name('admin.syllabus');
-  // Route::get('admin/syllabus/create', 'create_syllabus')->name('admin.syllabus.create');
-  // Route::post('admin/syllabus/', 'store_syllabus')->name('admin.syllabus.store');
-  // Route::get('admin/syllabus/edit/{id}', 'edit_syllabus')->name('admin.syllabus.edit');
-  // Route::post('admin/syllabus/update/{id}', 'update_syllabus')->name('admin.syllabus.update');
-  // Route::get('admin/syllabus/delete/{id}', 'syllabus_destroy')->name('admin.syllabus.delete');
+  Route::group(['prefix' => 'syllabuses'], function () {
+    Route::get('', 'syllabus_list');
+    Route::post('', 'syllabus_store');
+    Route::group(['prefix' => '{syllabus}'], function () {
+      Route::get('', 'syllabus_show');
+      Route::put('', 'syllabus_update');
+      Route::get('', 'syllabus_destroy');
+    });
+  });
 
   //Section
   // Route::get('admin/section/edit/{id}', 'edit_section')->name('admin.edit.section');
   // Route::post('admin/section/update/{id}', 'section_update')->name('admin.update.section');
 
   //Class list routes
-  // Route::get('admin/class', 'class_list')->name('admin.class');
-  // Route::get('admin/class/create', 'create_class')->name('admin.class.create');
-  // Route::post('admin/class', 'class_store')->name('admin.store.class');
-  // Route::get('admin/class/{id}', 'edit_class')->name('admin.edit.class');
-  // Route::post('admin/class/{id}', 'class_update')->name('admin.class.update');
-  // Route::get('admin/class/delete/{id}', 'class_destory')->name('admin.class.delete');
+  Route::group(['prefix' => 'classes'], function () {
+    Route::get('', 'classes_list');
+    Route::post('', 'classes_store');
+    Route::group(['prefix' => '{classes}'], function () {
+      Route::get('', 'classes_show');
+      Route::put('', 'classes_update');
+      Route::get('', 'classes_destroy');
+    });
+  });
 
   //Profile
   // Route::get('admin/profile', 'profile')->name('admin.profile');
