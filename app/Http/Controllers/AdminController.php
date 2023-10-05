@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AdminRequest;
+use App\Http\Requests\AdminUpdateRequest;
 use App\Models\Classes;
 use App\Models\ClassRoom;
 use App\Models\Exam;
@@ -12,11 +14,9 @@ use App\Models\Section;
 use App\Models\Subject;
 use App\Models\Syllabus;
 use App\Models\User;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\School;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
 
 
 class AdminController extends Controller
@@ -499,136 +499,66 @@ class AdminController extends Controller
   }
 
   //Admin
-
-  public function admin_list(Request $request)
+  public function admin_list(Request $request): JsonResponse
   {
-    $search = $request['search'] ?? '';
-
-    if($search != ''){
-      $admins = User::where(function ($query) use($search) {
-        $query->where('name', 'LIKE', "%{$search}%")
-        ->where('school_id', auth()->user()->school_id)
-        ->where('role_id', 1);
-      })->orWhere(function ($query) use($search) {
-        $query->where('email', 'LIKE', "%{$search}%")
-        ->where('school_id', auth()->user()->school_id)
-        ->where('role_id', 1);
-      })->paginate(5);
-
-    }else {
-      $admins = User::where('role_id', 1)->where('school_id', auth()->user()->school_id)->paginate(5);
-    }
-
-    return view('admin.admin.admin_list', ['admins'=> $admins, 'search' => $search]);
-
-  }
-
-  public function admin_create()
-  {
-    $admins = User::get()->where('role_id', 1)->where('school_id', auth()->user()->school_id);
-    return view('admin.admin.add_admin', compact('admins'));
-
-  }
-
-  public function admin_store(Request $request)
-  {
-    $validated = $request->validate([
-      'name' => 'required',
-      'email' => 'required|email|unique:users',
-      'password' => 'required|min:6',
-      'photo' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-      'gender' => 'required',
-      'blood_group' => 'required',
-      'birthday' => 'required',
-      'phone' => 'required',
-      'address' => 'required'
-    ],[
-      'name.required' => 'Name field is required.',
-      'password.required' => 'Password field is required.',
-      'email.required' => 'Email field is required.',
-      'email.email' => 'Email field must be email address.'
-  ]);
-
-    if (!empty($validated['photo'])) {
-      $file = $validated['photo'];
-      $filename = time() . '-' . $file->getClientOriginalExtension();
-      $file->move('admin-images/', $filename);
-      $photo = $filename;
-    } else {
-      $photo = '';
-    }
-
-    $info = array(
-      'gender' => $validated['gender'],
-      'blood_group' => $validated['blood_group'],
-      'birthday' => date($validated['birthday']),
-      'phone' => $validated['phone'],
-      'address' => $validated['address'],
-      'photo' => $photo
-    );
-
-    $validated['user_information'] = json_encode($info);
-    User::create([
-      'name' => $validated['name'],
-      'email' => $validated['email'],
-      'password' => $validated['password'],
-      'role_id' => '1',
-      'school_id' => auth()->user()->school_id,
-      'user_information' => $validated['user_information']
+    return response()->json([
+      'data' => [
+        'admin' => User::paginate(
+          $perPage = $request->query('perPage', 5),
+          $column = [
+            'id',
+            'name',
+            'email',
+            'user_information'
+          ],
+        ),
+      ],
+      'message' => 'Admin List Created',
     ]);
-    return redirect()->route('admin.admin')->with('success', 'Admin Added Successfully');
 
   }
 
-  public function admin_edit(string $id)
+  public function admin_store(AdminRequest $request)
   {
-    $admin = User::find($id);
-    return view('admin.admin.edit_admin', compact('admin'));
-  }
-
-  public function admin_update(Request $request, string $id)
-  {
-    $data = $request->all();
-
-    if (!empty($data['photo'])) {
-      $file = $data['photo'];
-      $filename = time() . '-' . $file->getClientOriginalExtension();
-      $file->move('admin-images/', $filename);
-      $photo = $filename;
-    } else {
-      $user_info = User::where('id', $id)->value('user_information');
-      $exsisting_filename = json_decode($user_info)->photo;
-      if ($exsisting_filename !== '') {
-        $photo = $exsisting_filename;
-      } else {
-        $photo = '';
-      }
-    }
-
-    $info = array(
-      'gender' => $data['gender'],
-      'blood_group' => $data['blood_group'],
-      'birthday' => date($data['birthday']),
-      'phone' => $data['phone'],
-      'address' => $data['address'],
-      'photo' => $photo
-    );
-
-    $data['user_information'] = json_encode($info);
-    User::where('id', $id)->update([
-      'name' => $data['name'],
-      'email' => $data['email'],
-      'user_information' => $data['user_information']
+    return response()->json([
+      'data' => [
+        'admin' => User::create($request->validated()),
+      ],
+      'message' => 'Admin store successful.',
     ]);
-    return redirect()->route('admin.admin')->with('success', 'Admin Updated Successfully');
+
   }
 
-  public function admin_destroy(string $id)
+  public function admin_Show(User $admin)
   {
-    $admin = User::find($id);
+    return response()->json([
+      'data' => [
+        'amin' => $admin,
+      ],
+      'message' => 'Admin show successful.',
+    ]);
+  }
+
+  public function admin_update(AdminUpdateRequest $request, User $admin)
+  {
+    $admin->update($request->validated());
+    return response()->json([
+      'data' => [
+        'admin' => $admin,
+      ],
+      'message' => 'Admin update successful.',
+    ]);
+  }
+
+  public function admin_destroy(User $admin)
+  {
     $admin->delete();
-    $admin = User::get()->where('role_id', 1)->where('school_id', auth()->user()->school_id);
-    return redirect()->back();
+    return response()->json([
+      'data' => [
+        'admin' => $admin,
+      ],
+      'message' => 'Admin deleted Successful.',
+    ]);
   }
 
   //School

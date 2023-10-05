@@ -1,0 +1,35 @@
+### List
+GET http://127.0.0.1:8000/api/admin
+Accept: application/json
+
+### Store
+POST http://127.0.0.1:8000/api/admin
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "mim",
+  "email": "mim@b.co",
+  "password": "12i34",
+  "user_information": "{'address':'address','phone':'0123456789','birthday':'birthday','gender':'gender','photo':'photo','blood_group':'blood_group'}"
+}
+
+### Show
+GET http://127.0.0.1:8000/api/admin/6
+Accept: application/json
+
+### Update
+PUT http://127.0.0.1:8000/api/admin/5
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "g",
+  "email": "g@b.co",
+  "password": "1234g",
+  "user_information": "{'address':'addregss','phone':'0123456g789','birthday':'birthday','gender':'gender','photo':'photo','blood_group':'blood_group'}"
+}
+
+### Delete
+DELETE  http://127.0.0.1:8000/api/admin/5
+Accept: application/json
