@@ -93,7 +93,7 @@ class AdminController extends Controller
     return response()->json([
       'data' => [
         'student' => User::paginate(
-          $perPage = $request->query('perPage', 5),
+          $perPage = $request->query('perPage', 10),
           $column = [
             'id',
             'name',
@@ -157,7 +157,7 @@ class AdminController extends Controller
     return response()->json([
       'data' => [
         'guardian' => User::paginate(
-          $perPage = $request->query('perPage', 5),
+          $perPage = $request->query('perPage', 10),
           $column = [
             'id',
             'name',
@@ -219,7 +219,7 @@ class AdminController extends Controller
     return response()->json([
       'data' => [
         'teacher' => User::paginate(
-          $perPage = $request->query('perPage', 5),
+          $perPage = $request->query('perPage', 10),
           $column = [
             'id',
             'name',
@@ -281,7 +281,7 @@ class AdminController extends Controller
     return response()->json([
       'data' => [
         'admin' => User::paginate(
-          $perPage = $request->query('perPage', 5),
+          $perPage = $request->query('perPage', 10),
           $column = [
             'id',
             'name',
@@ -435,10 +435,10 @@ class AdminController extends Controller
       $subjects = Subject::where(function ($query) use($search) {
         $query->where('name', 'LIKE', "%{$search}%")
         ->where('school_id', auth()->user()->school_id);
-      })->paginate(5);
+      })->paginate(10);
 
     }else {
-      $subjects = Subject::where('school_id', auth()->user()->school_id)->paginate(5);
+      $subjects = Subject::where('school_id', auth()->user()->school_id)->paginate(10);
     }
     return view('admin.subject.subject_list', ['subjects' => $subjects, 'search' => $search]);
   }
@@ -505,10 +505,10 @@ class AdminController extends Controller
       $classes = Classes::where(function ($query) use($search) {
         $query->where('name', 'LIKE', "%{$search}%")
         ->where('school_id', auth()->user()->school_id);
-      })->paginate(5);
+      })->paginate(10);
 
     }else {
-      $classes = Classes::where('school_id', auth()->user()->school_id)->paginate(5);
+      $classes = Classes::where('school_id', auth()->user()->school_id)->paginate(10);
       }
       $sections = Section::get()->where('school_id', auth()->user()->school_id);
 
@@ -605,10 +605,10 @@ class AdminController extends Controller
       $exams = Exam::where(function ($query) use($search) {
         $query->where('name', 'LIKE', "%{$search}%")
         ->where('school_id', auth()->user()->school_id);
-      })->paginate(5);
+      })->paginate(10);
 
     }else {
-      $exams = Exam::where('school_id', auth()->user()->school_id)->paginate(5);
+      $exams = Exam::where('school_id', auth()->user()->school_id)->paginate(10);
     }
     $classes = Classes::get()->where('school_id', auth()->user()->school_id);
     return view('admin.examination.exam_list', ['exams' => $exams, 'classes' => $classes, 'search' => $search]);
@@ -898,10 +898,10 @@ class AdminController extends Controller
       $syllabuses = Syllabus::where(function ($query) use($search) {
         $query->where('title', 'LIKE', "%{$search}%")
         ->where('school_id', auth()->user()->school_id);
-      })->paginate(5);
+      })->paginate(10);
 
     }else {
-      $syllabuses = Syllabus::where('school_id', auth()->user()->school_id)->paginate(5);
+      $syllabuses = Syllabus::where('school_id', auth()->user()->school_id)->paginate(10);
     }
 
     return view('admin.syllabus.syllabus_list', ['syllabuses' => $syllabuses, 'search' => $search]);
