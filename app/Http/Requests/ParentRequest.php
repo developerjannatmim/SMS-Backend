@@ -35,7 +35,8 @@ class ParentRequest extends FormRequest
             'name' => 'required',
             'email'  => 'required',
             'password'  => 'required',
-            'user_information'  => 'required'
+            'user_information'  => 'required',
+            'role_id'  => '4'
         ];
     }
 }
