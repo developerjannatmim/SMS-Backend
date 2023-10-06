@@ -25,6 +25,7 @@ Accept: application/json
 Content-Type: application/json
 
 {
+  "routine_creator": "abdul",
   "day": "sunday",
   "starting_hour": "14:28:51",
   "starting_minute": "14:28:51",
