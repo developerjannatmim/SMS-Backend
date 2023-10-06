@@ -31,7 +31,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::group(['prefix' => '{admin}'], function () {
       Route::get('', 'admin_show');
       Route::put('', 'admin_update');
-      Route::get('', 'admin_destroy');
+      Route::delete('', 'admin_destroy');
     });
   });
 
@@ -42,18 +42,18 @@ Route::controller(AdminController::class)->group(function () {
     Route::group(['prefix' => '{student}'], function () {
       Route::get('', 'student_show');
       Route::put('', 'student_update');
-      Route::get('', 'student_destroy');
+      Route::delete('', 'student_destroy');
     });
   });
 
   //Parent users route
-  Route::group(['prefix' => 'guardians'], function () {
-    Route::get('', 'guardian_list');
-    Route::post('', 'guardian_store');
-    Route::group(['prefix' => '{guardian}'], function () {
-      Route::get('', 'guardian_show');
-      Route::put('', 'guardian_update');
-      Route::get('', 'guardian_destroy');
+  Route::group(['prefix' => 'parents'], function () {
+    Route::get('', 'parent_list');
+    Route::post('', 'parent_store');
+    Route::group(['prefix' => '{parent}'], function () {
+      Route::get('', 'parent_show');
+      Route::put('', 'parent_update');
+      Route::delete('', 'parent_destroy');
     });
   });
 
@@ -64,7 +64,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::group(['prefix' => '{teacher}'], function () {
       Route::get('', 'teacher_show');
       Route::put('', 'teacher_update');
-      Route::get('', 'teacher_destroy');
+      Route::delete('', 'teacher_destroy');
     });
   });
 
@@ -75,7 +75,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::group(['prefix' => '{routine}'], function () {
       Route::get('', 'routine_show');
       Route::put('', 'routine_update');
-      Route::get('', 'routine_destroy');
+      Route::delete('', 'routine_destroy');
     });
   });
 
@@ -90,7 +90,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::group(['prefix' => '{marks}'], function () {
       Route::get('', 'marks_show');
       Route::put('', 'marks_update');
-      Route::get('', 'marks_destroy');
+      Route::delete('', 'marks_destroy');
     });
   });
 
@@ -101,7 +101,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::group(['prefix' => '{exam}'], function () {
       Route::get('', 'exam_show');
       Route::put('', 'exam_update');
-      Route::get('', 'exam_destroy');
+      Route::delete('', 'exam_destroy');
     });
   });
 
@@ -112,7 +112,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::group(['prefix' => '{grade}'], function () {
       Route::get('', 'grade_show');
       Route::put('', 'grade_update');
-      Route::get('', 'grade_destroy');
+      Route::delete('', 'grade_destroy');
     });
   });
 
@@ -123,7 +123,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::group(['prefix' => '{subject}'], function () {
       Route::get('', 'subject_show');
       Route::put('', 'subject_update');
-      Route::get('', 'subject_destroy');
+      Route::delete('', 'subject_destroy');
     });
   });
 
@@ -134,7 +134,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::group(['prefix' => '{syllabus}'], function () {
       Route::get('', 'syllabus_show');
       Route::put('', 'syllabus_update');
-      Route::get('', 'syllabus_destroy');
+      Route::delete('', 'syllabus_destroy');
     });
   });
 
@@ -149,7 +149,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::group(['prefix' => '{classes}'], function () {
       Route::get('', 'classes_show');
       Route::put('', 'classes_update');
-      Route::get('', 'classes_destroy');
+      Route::delete('', 'classes_destroy');
     });
   });
 

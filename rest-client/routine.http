@@ -1,0 +1,38 @@
+### List
+GET http://127.0.0.1:8000/api/routines
+Accept: application/json
+
+### Store
+POST http://127.0.0.1:8000/api/routines
+Accept: application/json
+Content-Type: application/json
+
+{
+  "day": "saturday",
+  "starting_hour": "14:56",
+  "starting_minute": "14:5",
+  "ending_hour": "14:56",
+  "ending_minute": "14:56"
+}
+
+### Show
+GET http://127.0.0.1:8000/api/routines/3
+Accept: application/json
+
+### Update
+PUT http://127.0.0.1:8000/api/routines/15
+Accept: application/json
+Content-Type: application/json
+
+{
+  "routine_creator": "abdul",
+  "day": "sunday",
+  "starting_hour": "14:28:51",
+  "starting_minute": "14:28:51",
+  "ending_hour": "14:28:51",
+  "ending_minute": "14:28:51"
+}
+
+### Delete
+DELETE  http://127.0.0.1:8000/api/routines/12
+Accept: application/json

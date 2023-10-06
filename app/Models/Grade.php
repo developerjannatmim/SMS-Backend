@@ -18,8 +18,7 @@ class Grade extends Model
         'name', 
         'grade_point', 
         'mark_from', 
-        'mark_upto', 
-        'total_marks', 
+        'mark_upto',
         'school_id'
     ];
 }

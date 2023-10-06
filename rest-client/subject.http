@@ -1,0 +1,29 @@
+### List
+GET http://127.0.0.1:8000/api/subjects
+Accept: application/json
+
+### Store
+POST http://127.0.0.1:8000/api/subjects
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "math"
+}
+
+### Show
+GET http://127.0.0.1:8000/api/subjects/3
+Accept: application/json
+
+### Update
+PUT http://127.0.0.1:8000/api/subjects/15
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "english"
+}
+
+### Delete
+DELETE  http://127.0.0.1:8000/api/subjects/12
+Accept: application/json

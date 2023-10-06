@@ -33,7 +33,11 @@ class RoutineRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'day' => 'required',
+            'starting_hour' => 'required',
+            'starting_minute' => 'required',
+            'ending_hour' => 'required',
+            'ending_minute' => 'required'
         ];
     }
 }

@@ -35,8 +35,7 @@ class GradeUpdateRequest extends FormRequest
             'name' => 'required', 
             'grade_point' => 'required', 
             'mark_from' => 'required', 
-            'mark_upto' => 'required', 
-            'total_marks' => 'required'
+            'mark_upto' => 'required'
         ];
     }
 }

@@ -1,9 +1,9 @@
 ### List
-GET http://127.0.0.1:8000/api/student
+GET http://127.0.0.1:8000/api/students
 Accept: application/json
 
 ### Store
-POST http://127.0.0.1:8000/api/student
+POST http://127.0.0.1:8000/api/students
 Accept: application/json
 Content-Type: application/json
 
@@ -15,11 +15,11 @@ Content-Type: application/json
 }
 
 ### Show
-GET http://127.0.0.1:8000/api/student/1
+GET http://127.0.0.1:8000/api/students/20
 Accept: application/json
 
 ### Update
-PUT http://127.0.0.1:8000/api/student/1
+PUT http://127.0.0.1:8000/api/students/1
 Accept: application/json
 Content-Type: application/json
 
@@ -31,5 +31,5 @@ Content-Type: application/json
 }
 
 ### Delete
-DELETE  http://127.0.0.1:8000/api/student/1
+DELETE  http://127.0.0.1:8000/api/students/1
 Accept: application/json

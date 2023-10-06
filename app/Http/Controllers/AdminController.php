@@ -108,7 +108,7 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'student' => User::paginate(
+        'student' => User::where('role_id', 3)->paginate(
           $perPage = $request->query('perPage', 10),
           $column = [
             'id',
@@ -128,7 +128,15 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'student' => User::create($request->validated()),
+        $validated = $request->validated(),
+        'student' => User::create([
+          'name' => $validated['name'],
+          'email' => $validated['email'],
+          'password' => $validated['password'],
+          'user_information' => $validated['user_information'],
+          'role_id' => '3',
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'student store successful.',
     ]);
@@ -168,11 +176,11 @@ class AdminController extends Controller
 
   //Guardian
 
-  public function guardian_list(Request $request): JsonResponse
+  public function parent_list(Request $request): JsonResponse
   {
     return response()->json([
       'data' => [
-        'guardian' => User::paginate(
+        'parent' => User::where('role_id', 4)->paginate(
           $perPage = $request->query('perPage', 10),
           $column = [
             'id',
@@ -182,21 +190,29 @@ class AdminController extends Controller
           ],
         ),
       ],
-      'message' => 'guardian List Created',
+      'message' => 'parent List Created',
     ]);
   }
 
-  public function guardian_store(ParentRequest $request)
+  public function parent_store(ParentRequest $request)
   {
     return response()->json([
       'data' => [
-        'parent' => User::create($request->validated()),
+        $validated = $request->validated(),
+        'parent' => User::create([
+          'name' => $validated['name'],
+          'email' => $validated['email'],
+          'password' => $validated['password'],
+          'user_information' => $validated['user_information'],
+          'role_id' => '4',
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'parent store successful.',
     ]);
   }
 
-  public function guardian_show(User $parent)
+  public function parent_Show(User $parent)
   {
     return response()->json([
       'data' => [
@@ -206,7 +222,7 @@ class AdminController extends Controller
     ]);
   }
 
-  public function guardian_update(ParentUpdateRequest $request, User $parent)
+  public function parent_update(ParentUpdateRequest $request, User $parent)
   {
     $parent->update($request->validated());
     return response()->json([
@@ -217,7 +233,7 @@ class AdminController extends Controller
     ]);
   }
 
-  public function guardian_destroy(User $parent)
+  public function parent_destroy(User $parent)
   {
     $parent->delete();
     return response()->json([
@@ -234,7 +250,7 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'teacher' => User::paginate(
+        'teacher' => User::where('role_id', 2)->paginate(
           $perPage = $request->query('perPage', 10),
           $column = [
             'id',
@@ -252,7 +268,15 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'teacher' => User::create($request->validated()),
+        $validated = $request->validated(),
+        'teacher' => User::create([
+          'name' => $validated['name'],
+          'email' => $validated['email'],
+          'password' => $validated['password'],
+          'user_information' => $validated['user_information'],
+          'role_id' => '2',
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'teacher store successful.',
     ]);
@@ -296,7 +320,7 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'admin' => User::paginate(
+        'admin' => User::where('role_id', 1)->paginate(
           $perPage = $request->query('perPage', 10),
           $column = [
             'id',
@@ -315,7 +339,15 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'admin' => User::create($request->validated()),
+        $validated = $request->validated(),
+        'admin' => User::create([
+          'name' => $validated['name'],
+          'email' => $validated['email'],
+          'password' => $validated['password'],
+          'user_information' => $validated['user_information'],
+          'role_id' => '1',
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'Admin store successful.',
     ]);
@@ -378,11 +410,11 @@ class AdminController extends Controller
         'grade' => Grade::paginate(
           $perPage = $request->query('perPage', 10),
           $column = [
+            'id',
             'name',
             'grade_point',
             'mark_from',
-            'mark_upto',
-            'total_marks'
+            'mark_upto'
           ],
         ),
       ],
@@ -395,7 +427,14 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'grade' => Grade::create($request->validated()),
+        $validated = $request->validated(),
+        'grade' => Grade::create([
+          'name' => $validated['name'],
+          'grade_point' => $validated['grade_point'],
+          'mark_from' => $validated['mark_from'],
+          'mark_upto' => $validated['mark_upto'],
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'grade store successful.',
     ]);
@@ -442,9 +481,7 @@ class AdminController extends Controller
           $perPage = $request->query('perPage', 10),
           $column = [
             'id',
-            'name',
-            'email',
-            'user_information'
+            'name'
           ],
         ),
       ],
@@ -456,7 +493,12 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'subject' => Subject::create($request->validated()),
+        $validated = $request->validated(),
+        'subject' => Subject::create([
+          'name' => $validated['name'],
+          'class_id' => '1',
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'subject store successful.',
     ]);
@@ -699,9 +741,12 @@ class AdminController extends Controller
           $perPage = $request->query('perPage', 10),
           $column = [
             'id',
-            'name',
-            'email',
-            'user_information'
+            'routine_creator',
+            'day',
+            'starting_hour',
+            'starting_minute',
+            'ending_hour',
+            'ending_minute'
           ],
         ),
       ],
@@ -709,11 +754,24 @@ class AdminController extends Controller
     ]);
   }
 
-  public function store_routine(RoutineRequest $request)
+  public function routine_store(RoutineRequest $request)
   {
     return response()->json([
       'data' => [
-        'routine' => Routine::create($request->validated()),
+        $validated = $request->validated(),
+        'routine' => Routine::create([
+          'day' => $validated['day'],
+          'starting_hour' => $validated['starting_hour'],
+          'starting_minute' => $validated['starting_minute'],
+          'ending_hour' => $validated['ending_hour'],
+          'ending_minute' => $validated['ending_minute'],
+          'routine_creator' => '4',
+          'class_id' => '1',
+          'subject_id' => '13',
+          'section_id' => '1',
+          'room_id' => '1',
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'routine store successful.',
     ]);
@@ -729,7 +787,7 @@ class AdminController extends Controller
     ]);
   }
 
-  public function update_routine(RoutineUpdateRequest $request, Routine $routine)
+  public function routine_update(RoutineUpdateRequest $request, Routine $routine)
   {
     $routine->update($request->validated());
     return response()->json([
@@ -760,9 +818,8 @@ class AdminController extends Controller
           $perPage = $request->query('perPage', 10),
           $column = [
             'id',
-            'name',
-            'email',
-            'user_information'
+            'title',
+            'file'
           ],
         ),
       ],
@@ -770,11 +827,19 @@ class AdminController extends Controller
     ]);
   }
 
-  public function store_syllabus(SyllabusRequest $request)
+  public function syllabus_store(SyllabusRequest $request)
   {
     return response()->json([
       'data' => [
-        'syllabus' => Syllabus::create($request->validated()),
+        $validated = $request->validated(),
+        'syllabus' => Syllabus::create([
+          'title' => $validated['title'],
+          'file' => $validated['file'],
+          'class_id' => '1',
+          'subject_id' => '13',
+          'section_id' => '1',
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'syllabus store successful.',
     ]);
@@ -790,7 +855,7 @@ class AdminController extends Controller
     ]);
   }
 
-  public function update_syllabus(SyllabusUpdateRequest $request, Syllabus $syllabus)
+  public function syllabus_update(SyllabusUpdateRequest $request, Syllabus $syllabus)
   {
     $syllabus->update($request->validated());
     return response()->json([

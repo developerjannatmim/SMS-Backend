@@ -1,0 +1,31 @@
+### List
+GET http://127.0.0.1:8000/api/syllabuses
+Accept: application/json
+
+### Store
+POST http://127.0.0.1:8000/api/syllabuses
+Accept: application/json
+Content-Type: application/json
+
+{
+  "title": "test",
+  "file": "syllabus photo"
+}
+
+### Show
+GET http://127.0.0.1:8000/api/syllabuses/3
+Accept: application/json
+
+### Update
+PUT http://127.0.0.1:8000/api/syllabuses/2
+Accept: application/json
+Content-Type: application/json
+
+{
+  "title": "final exam",
+  "file": "syllabus1 photo"
+}
+
+### Delete
+DELETE  http://127.0.0.1:8000/api/syllabuses/12
+Accept: application/json
