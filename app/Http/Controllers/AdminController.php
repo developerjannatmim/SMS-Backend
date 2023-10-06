@@ -4,10 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AdminRequest;
 use App\Http\Requests\AdminUpdateRequest;
+use App\Http\Requests\ClassesRequest;
+use App\Http\Requests\ClassesUpdateRequest;
+use App\Http\Requests\ExaminationRequest;
+use App\Http\Requests\ExaminationUpdateRequest;
+use App\Http\Requests\GradeRequest;
+use App\Http\Requests\GradeUpdateRequest;
+use App\Http\Requests\MarkRequest;
+use App\Http\Requests\MarkUpdateRequest;
 use App\Http\Requests\ParentRequest;
 use App\Http\Requests\ParentUpdateRequest;
+use App\Http\Requests\RoutineRequest;
+use App\Http\Requests\RoutineUpdateRequest;
+use App\Http\Requests\SectionRequest;
+use App\Http\Requests\SectionUpdateRequest;
 use App\Http\Requests\StudentRequest;
 use App\Http\Requests\StudentUpdateRequest;
+use App\Http\Requests\SubjectRequest;
+use App\Http\Requests\SubjectUpdateRequest;
+use App\Http\Requests\SyllabusRequest;
+use App\Http\Requests\SyllabusUpdateRequest;
 use App\Http\Requests\TeacherRequest;
 use App\Http\Requests\TeacherUpdateRequest;
 use App\Models\Classes;
@@ -355,645 +371,445 @@ class AdminController extends Controller
   }
 
   //Grades
-  public function gradeList()
+  public function grade_list(Request $request): JsonResponse
   {
-    $grades = Grade::get()->where('school_id', auth()->user()->school_id);
-    return view('admin.grade.grade_list', ['grades' => $grades]);
-  }
-
-  public function createGrade()
-  {
-    return view('admin.grade.add_grade');
-  }
-
-  public function gradeStore(Request $request)
-  {
-    $validated = $request->validate([
-      'name' => 'required',
-      'grade_point' => 'required',
-      'mark_from' => 'required',
-      'mark_upto' => 'required'
-    ],[
-      'name.required' => 'Name field is required.',
-      'grade_point.required' => 'Grade Point field is required.',
-      'mark_from.required' => 'Mark From field is required.',
-      'mark_upto.required' => 'Mark Upto field is required.'
-  ]);
-
-    $duplicate_grade_check = Grade::get()->where('name', $validated['grade'])->where('school_id', auth()->user()->school_id);
-
-    if (count($duplicate_grade_check) == 0) {
-      Grade::create([
-        'name' => $validated['grade'],
-        'grade_point' => $validated['grade_point'],
-        'mark_from' => $validated['mark_from'],
-        'mark_upto' => $validated['mark_upto'],
-        'school_id' => auth()->user()->school_id,
-      ]);
-
-      return redirect()->back()->with(['error' => 'Sorry this grade already exists']);
-
-    } else {
-      return view('admin.grade.grade_list')->with(['message' => 'You have successfully create a new grade.']);
-    }
-  }
-
-  public function editGrade(string $id)
-  {
-    $grade = Grade::find($id);
-    return view('admin.grade.edit_grade', ['grade' => $grade]);
-  }
-
-  public function gradeUpdate(Request $request, $id)
-  {
-    $data = $request->all();
-    Grade::where('id', $id)->update([
-      'name' => $data['grade'],
-      'grade_point' => $data['grade_point'],
-      'mark_from' => $data['mark_from'],
-      'mark_upto' => $data['mark_upto'],
-      'school_id' => auth()->user()->school_id,
+    return response()->json([
+      'data' => [
+        'grade' => Grade::paginate(
+          $perPage = $request->query('perPage', 10),
+          $column = [
+            'name',
+            'grade_point',
+            'mark_from',
+            'mark_upto',
+            'total_marks'
+          ],
+        ),
+      ],
+      'message' => 'grade List Created',
     ]);
-
-    return redirect()->back()->with('message', 'You have successfully update grade.');
   }
 
-  public function gradeDelete($id)
+
+  public function grade_store(GradeRequest $request)
   {
-    $grade = Grade::find($id);
+    return response()->json([
+      'data' => [
+        'grade' => Grade::create($request->validated()),
+      ],
+      'message' => 'grade store successful.',
+    ]);
+  }
+
+  public function grade_show(Grade $grade)
+  {
+    return response()->json([
+      'data' => [
+        'grade' => $grade,
+      ],
+      'message' => 'grade show successful.',
+    ]);
+  }
+
+  public function grade_update(GradeUpdateRequest $request, Grade $grade)
+  {
+    $grade->update($request->validated());
+    return response()->json([
+      'data' => [
+        'grade' => $grade,
+      ],
+      'message' => 'grade update successful.',
+    ]);
+  }
+
+  public function grade_destroy(Grade $grade)
+  {
     $grade->delete();
-    $grade = Grade::get()->where('school_id', auth()->user()->school_id);
-    return redirect()->back()->with('message', 'You have successfully delete grade.');
+    return response()->json([
+      'data' => [
+        'grade' => $grade,
+      ],
+      'message' => 'grade deleted Successful.',
+    ]);
   }
 
   //Subject
-  public function subject_list(Request $request)
+  public function subject_list(Request $request): JsonResponse
   {
-    $search = $request['search'] ?? '';
-
-    if($search != ''){
-      $subjects = Subject::where(function ($query) use($search) {
-        $query->where('name', 'LIKE', "%{$search}%")
-        ->where('school_id', auth()->user()->school_id);
-      })->paginate(10);
-
-    }else {
-      $subjects = Subject::where('school_id', auth()->user()->school_id)->paginate(10);
-    }
-    return view('admin.subject.subject_list', ['subjects' => $subjects, 'search' => $search]);
-  }
-
-  public function create_subject()
-  {
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    return view('admin.subject.add_subject', ['classes' => $classes]);
-  }
-
-  public function subject_store(Request $request)
-  {
-    $validated = $request->validate([
-      'name' => 'required',
-      'class_id' => 'required'
-    ],[
-      'name.required' => 'Name field is required.',
-      'class_id.required' => 'Class Id field is required.'
-  ]);
-
-    Subject::create([
-      'name' => $validated['name'],
-      'class_id' => $validated['class_id'],
-      'school_id' => auth()->user()->school_id,
+    return response()->json([
+      'data' => [
+        'subject' => Subject::paginate(
+          $perPage = $request->query('perPage', 10),
+          $column = [
+            'id',
+            'name',
+            'email',
+            'user_information'
+          ],
+        ),
+      ],
+      'message' => 'subject List Created',
     ]);
-    return redirect()->route('admin.subject')->with(['message' => 'You have successfully create a new Subject.']);
   }
 
-  public function edit_subject(string $id)
+  public function subject_store(SubjectRequest $request)
   {
-    $subject = Subject::find($id);
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    return view('admin.subject.edit_subject', ['subject' => $subject, 'classes' => $classes]);
-  }
-
-  public function subject_update(Request $request, $id)
-  {
-    $data = $request->all();
-
-    Subject::where('id', $id)->update([
-      'name' => $data['name'],
-      'class_id' => $data['class_id'],
-      'school_id' => auth()->user()->school_id,
+    return response()->json([
+      'data' => [
+        'subject' => Subject::create($request->validated()),
+      ],
+      'message' => 'subject store successful.',
     ]);
-
-    return redirect()->route('admin.subject')->with('message', 'You have successfully update Subject.');
   }
 
-  public function subject_destory($id)
+  public function subject_show(Subject $subject)
   {
-    $subject = Subject::find($id);
+    return response()->json([
+      'data' => [
+        'subject' => $subject,
+      ],
+      'message' => 'subject show successful.',
+    ]);
+  }
+
+  public function subject_update(SubjectUpdateRequest $request, Subject $subject)
+  {
+    $subject->update($request->validated());
+    return response()->json([
+      'data' => [
+        'subject' => $subject,
+      ],
+      'message' => 'subject update successful.',
+    ]);
+  }
+
+  public function subject_destroy(Subject $subject)
+  {
     $subject->delete();
-    $subject = Subject::get()->where('school_id', auth()->user()->school_id);
-    return redirect()->back()->with('message', 'You have successfully delete Subject.');
+    return response()->json([
+      'data' => [
+        'subject' => $subject,
+      ],
+      'message' => 'subject deleted Successful.',
+    ]);
   }
 
   //Class
-  public function class_list(Request $request)
+  public function class_list(Request $request): JsonResponse
   {
-    $search = $request['search'] ?? '';
-
-    if($search != ''){
-
-      $classes = Classes::where(function ($query) use($search) {
-        $query->where('name', 'LIKE', "%{$search}%")
-        ->where('school_id', auth()->user()->school_id);
-      })->paginate(10);
-
-    }else {
-      $classes = Classes::where('school_id', auth()->user()->school_id)->paginate(10);
-      }
-      $sections = Section::get()->where('school_id', auth()->user()->school_id);
-
-    return view('admin.class.class_list', ['sections' => $sections, 'classes' => $classes, 'search' => $search]);
+    return response()->json([
+      'data' => [
+        'class' => Classes::paginate(
+          $perPage = $request->query('perPage', 10),
+          $column = [
+            'id',
+            'name',
+            'email',
+            'user_information'
+          ],
+        ),
+      ],
+      'message' => 'class List Created',
+    ]);
   }
 
-  public function create_class()
+  public function class_store(ClassesRequest $request)
   {
-    return view('admin.class.add_class');
+    return response()->json([
+      'data' => [
+        'class' => Classes::create($request->validated()),
+      ],
+      'message' => 'class store successful.',
+    ]);
   }
 
-  public function class_store(Request $request)
+  public function class_Show(Classes $class)
   {
-    $validated = $request->validate([
-      'name' => 'required'
-    ],[
-      'name.required' => 'Name field is required.'
-  ]);
-
-    $duplicate_class_name = Classes::get()->where('name', $validated['name'])->where('school_id', auth()->user()->school_id);
-
-    if(count($duplicate_class_name) == 0){
-      $id = Classes::create([
-        'name' => $validated['name'],
-        'school_id' => auth()->user()->school_id
-      ])->id;
-
-      Section::create([
-        'name' => 'A',
-        'class_id' => $id,
-        'school_id' => auth()->user()->school_id
-      ]);
-
-      return redirect()->route('admin.class')->with(['success' => 'You have successfully create a new class.']);
-    }else {
-      return redirect()->back()->with('error', 'sorry already the class name is exisist');
-    }
-
+    return response()->json([
+      'data' => [
+        'class' => $class,
+      ],
+      'message' => 'class show successful.',
+    ]);
   }
 
   //Section
-  public function edit_section(string $id)
+  public function section_update(SectionUpdateRequest $request, Section $section)
   {
-    $section = Section::find($id);
-    return view('admin.class.edit_section', compact('section'));
-  }
-
-  public function section_update(Request $request, string $id)
-  {
-    $data = $request->all();
-
-    Section::where('id', $id)->update([
-      'name' => $data['name'],
-      'school_id' => auth()->user()->school_id
+    $section->update($request->validated());
+    return response()->json([
+      'data' => [
+        'section' => $section,
+      ],
+      'message' => 'section update successful.',
     ]);
-    return redirect()->route('admin.class');
   }
  //Section end
-  public function edit_class(string $id)
+
+  public function class_update(ClassesUpdateRequest $request, Classes $class)
   {
-    $class = Classes::find($id);
-    return view('admin.class.edit_class', ['class' => $class]);
+    $class->update($request->validated());
+    return response()->json([
+      'data' => [
+        'class' => $class,
+      ],
+      'message' => 'class update successful.',
+    ]);
   }
 
-  public function class_update(Request $request, $id)
+  public function class_destory(Classes $class)
   {
-    $data = $request->all();
-
-    $duplicate_class_name = Classes::get()->where('name', $data['name'])->where('school_id', auth()->user()->school_id);
-
-    if( count($duplicate_class_name) == 0 ){
-      Classes::where('id', $id)->update([
-        'name' => $data['name'],
-        'school_id' => auth()->user()->school_id,
-      ]);
-      return redirect()->route('admin.class')->with('message', 'You have successfully update class.');
-    }
-    return redirect()->back()->with('error', 'sorry already the class name is exisist');
-  }
-
-  public function class_destory($id)
-  {
-    // $class = Classes::find($id);
-    // $class->delete();
-    // return redirect()->back()->with('message', 'You have successfully delete class.');
+    $class->delete();
+    return response()->json([
+      'data' => [
+        'class' => $class,
+      ],
+      'message' => 'class deleted Successful.',
+    ]);
   }
 
   //Exam
-  public function examList(Request $request)
+  public function exam_list(Request $request): JsonResponse
   {
-    $search = $request['search'] ?? '';
-
-    if($search != ''){
-      $exams = Exam::where(function ($query) use($search) {
-        $query->where('name', 'LIKE', "%{$search}%")
-        ->where('school_id', auth()->user()->school_id);
-      })->paginate(10);
-
-    }else {
-      $exams = Exam::where('school_id', auth()->user()->school_id)->paginate(10);
-    }
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    return view('admin.examination.exam_list', ['exams' => $exams, 'classes' => $classes, 'search' => $search]);
-  }
-
-  public function createExam()
-  {
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    $sections = Section::get()->where('school_id', auth()->user()->school_id);
-    return view('admin.examination.add_exam', ['classes' => $classes, 'sections' => $sections]);
-  }
-
-  public function examStore(Request $request)
-  {
-    $validated = $request->validate([
-      'name' => 'required',
-      'exam_type' => 'required',
-      'starting_time' => 'required',
-      'ending_time' => 'required',
-      'total_marks' => 'required',
-      'class_id' => 'required',
-      'section_id' => 'required'
-    ],[
-      'name.required' => 'Name field is required.',
-      'class_id.required' => 'Class Id field is required.',
-      'exam_type.required' => 'exam_type field is required.',
-      'starting_time.required' => 'starting_time field is required.',
-      'ending_time.required' => 'ending_time field is required.',
-      'total_marks.required' => 'total_marks field is required.',
-      'section_id.required' => 'section_id field is required.',
+    return response()->json([
+      'data' => [
+        'exam' => Exam::paginate(
+          $perPage = $request->query('perPage', 10),
+          $column = [
+            'id',
+            'name',
+            'email',
+            'user_information'
+          ],
+        ),
+      ],
+      'message' => 'exam List Created',
     ]);
+  }
 
-    Exam::create([
-      'name' => $validated['exam_name'],
-      'exam_type' => $validated['exam_type'],
-      'starting_time' => $validated['starting_time'],
-      'ending_time' => $validated['ending_time'],
-      'total_marks' => $validated['total_marks'],
-      'status' => 'pending',
-      'class_id' => $validated['class_id'],
-      'section_id' => $validated['section_id'],
-      'school_id' => auth()->user()->school_id,
+  public function exam_store(ExaminationRequest $request)
+  {
+    return response()->json([
+      'data' => [
+        'exam' => Exam::create($request->validated()),
+      ],
+      'message' => 'exam store successful.',
     ]);
-
-    return redirect()->route('admin.exam')->with('success', 'You have successfully create a new exam.');
   }
 
-  public function editExam(string $id)
+  public function exam_show(Exam $exam)
   {
-    $exam = Exam::find($id);
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    $sections = Section::get()->where('school_id', $exam->school_id);
-    return view('admin.examination.edit_exam', ['exam' => $exam, 'classes' => $classes, 'sections' => $sections]);
-
-  }
-
-  public function examUpdate(Request $request, $id)
-  {
-    $data = $request->all();
-    Exam::where('id', $id)->update([
-      'name' => $data['exam_name'],
-      'exam_type' => 'offline',
-      'starting_time' => $data['starting_time'],
-      'ending_time' => $data['ending_time'],
-      'total_marks' => $data['total_marks'],
-      'status' => 'pending',
-      'class_id' => $data['class_id'],
-      'section_id' => $data['section_id'],
-      'school_id' => auth()->user()->school_id
+    return response()->json([
+      'data' => [
+        'exam' => $exam,
+      ],
+      'message' => 'exam show successful.',
     ]);
-    return redirect()->back()->with('message', 'You have successfully update exam.');
-
   }
 
-  public function examDelete($id)
+  public function exam_update(ExaminationUpdateRequest $request, Exam $exam)
   {
-    $exam = Exam::find($id);
+    $exam->update($request->validated());
+    return response()->json([
+      'data' => [
+        'exam' => $exam,
+      ],
+      'message' => 'exam update successful.',
+    ]);
+  }
+
+  public function exam_destory(Exam $exam)
+  {
     $exam->delete();
-    return redirect()->back()->with('message', 'You have successfully delete exam.');
-  }
-
-  public function classWiseExam($id)
-  {
-    $id = array('class_id');
-    $exams = Exam::where([
-      'class_id' => $id
-    ])->first();
-    $classes = Classes::where('school_id', auth()->user()->school_id)->get();
-    return view('admin.examination.exam_list', ['exams' => $exams, 'classes' => $classes]);
+    return response()->json([
+      'data' => [
+        'exam' => $exam,
+      ],
+      'message' => 'exam deleted Successful.',
+    ]);
   }
 
   //Marks
-  public function marks()
+  public function marks_list(Request $request): JsonResponse
   {
-    $marks = Mark::get()->where('school_id', auth()->user()->school_id);
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    $sections = Section::get()->where('school_id', auth()->user()->school_id);
-    $subjects = Subject::get()->where('school_id', auth()->user()->school_id);
-
-    return view('admin.marks.marks_list', ['marks' => $marks, 'classes' => $classes, 'sections' => $sections, 'subjects' => $subjects]);
-  }
-
-  public function create_marks()
-  {
-    $students_name = User::get()->where('role_id', 3)->where('school_id', auth()->user()->school_id);
-    $exams = Exam::get()->where('school_id', auth()->user()->school_id);
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    $sections = Section::get()->where('school_id', auth()->user()->school_id);
-    $subjects = Subject::get()->where('school_id', auth()->user()->school_id);
-    return view('admin.marks.add_mark', ['students_name' => $students_name, 'classes' => $classes, 'sections' => $sections, 'subjects' => $subjects, 'exams' => $exams]);
-  }
-
-  public function store_marks(Request $request)
-  {
-    $validated = $request->validate([
-      'user_id' => 'required',
-      'exam_id' => 'required',
-      'class_id' => 'required',
-      'section_id' => 'required',
-      'subject_id' => 'required',
-      'marks' => 'required',
-      'grade_point' => 'required',
-      'comment' => 'required'
-    ],[
-      'user_id.required' => 'Name field is required.',
-      'exam_id.required' => 'Exam Id field is required.',
-      'class_id.required' => 'Class Id field is required.',
-      'section_id.required' => 'section_id field is required.',
-      'subject_id.required' => 'subject_id field is required.',
-      'marks.required' => 'marks field is required.',
-      'grade_point.required' => 'grade_point field is required.',
-      'comment.required' => 'comment field is required.'
+    return response()->json([
+      'data' => [
+        'marks' => Mark::paginate(
+          $perPage = $request->query('perPage', 10),
+          $column = [
+            'id',
+            'name',
+            'email',
+            'user_information'
+          ],
+        ),
+      ],
+      'message' => 'marks List Created',
     ]);
+  }
 
-    Mark::create([
-      'user_id' => $validated['user_id'],
-      'exam_id' => $validated['exam_id'],
-      'class_id' => $validated['class_id'],
-      'section_id' => $validated['section_id'],
-      'subject_id' => $validated['subject_id'],
-      'marks' => $validated['marks'],
-      'grade_point' => $validated['grade_point'],
-      'comment' => $validated['comment'],
-      'school_id' => auth()->user()->school_id
+  public function store_marks(MarkRequest $request)
+  {
+    return response()->json([
+      'data' => [
+        'marks' => Mark::create($request->validated()),
+      ],
+      'message' => 'marks store successful.',
     ]);
-
-    return redirect()->route('admin.marks');
   }
 
-  public function edit_marks(string $id)
+  public function marks_show(Mark $marks)
   {
-    $mark = Mark::find($id);
-    $exams = Exam::get()->where('school_id', auth()->user()->school_id);
-    $students_name = User::get()->where('role_id', 3)->where('school_id', auth()->user()->school_id);
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    $sections = Section::get()->where('school_id', auth()->user()->school_id);
-    $subjects = Subject::get()->where('school_id', auth()->user()->school_id);
-    return view('admin.marks.edit_mark', ['mark' => $mark, 'classes' => $classes, 'sections' => $sections, 'subjects' => $subjects, 'students_name' => $students_name, 'exams' => $exams]);
-  }
-
-  public function update_marks(Request $request, string $id)
-  {
-    $data = $request->all();
-
-    Mark::where('id', $id)->update([
-      'user_id' => $data['user_id'],
-      'exam_id' => $data['exam_id'],
-      'class_id' => $data['class_id'],
-      'section_id' => $data['section_id'],
-      'subject_id' => $data['subject_id'],
-      'marks' => $data['marks'],
-      'grade_point' => $data['grade_point'],
-      'comment' => $data['comment'],
-      'school_id' => auth()->user()->school_id
+    return response()->json([
+      'data' => [
+        'marks' => $marks,
+      ],
+      'message' => 'marks show successful.',
     ]);
-    return redirect()->route('admin.marks');
   }
 
-  public function marks_destroy(string $id)
+  public function update_marks(MarkUpdateRequest $request, Mark $marks)
   {
-    $mark = Mark::find($id);
-    $mark->delete();
-    return redirect()->route('admin.marks');
+    $marks->update($request->validated());
+    return response()->json([
+      'data' => [
+        'marks' => $marks,
+      ],
+      'message' => 'marks update successful.',
+    ]);
+  }
+
+  public function marks_destroy(Mark $marks)
+  {
+    $marks->delete();
+    return response()->json([
+      'data' => [
+        'marks' => $marks,
+      ],
+      'message' => 'marks deleted Successful.',
+    ]);
   }
 
   //Routine
-  public function routine()
+  public function routine_list(Request $request): JsonResponse
   {
-    return view('admin.routine.routine');
-  }
-  public function create_routine()
-  {
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    $sections = Section::get()->where('school_id', auth()->user()->school_id);
-    $class_rooms = ClassRoom::get()->where('school_id', auth()->user()->school_id);
-    $subjects = Subject::get()->where('school_id', auth()->user()->school_id);
-    $routine_creator = User::where('role_id', 2)->where('school_id', auth()->user()->school_id)->get();
-    return view('admin.routine.add_routine', ['classes' => $classes, 'sections' => $sections, 'class_rooms' => $class_rooms, 'subjects' => $subjects, 'routine_creator' => $routine_creator]);
-  }
-
-  public function store_routine(Request $request)
-  {
-    $validated = $request->validate([
-      'class_id' => 'required',
-      'section_id' => 'required',
-      'subject_id' => 'required',
-      'routine_creator' => 'required',
-      'room_id' => 'required',
-      'day' => 'required',
-      'starting_hour' => 'required',
-      'starting_minute' => 'required',
-      'ending_hour' => 'required',
-      'ending_minute' => 'required'
-    ],[
-      'class_id.required' => 'Class Id field is required.',
-      'section_id.required' => 'section_id field is required.',
-      'subject_id.required' => 'subject_id field is required.',
-      'routine_creator.required' => 'routine_creator field is required.',
-      'room_id.required' => 'room_id field is required.',
-      'day.required' => 'day field is required.',
-      'starting_hour.required' => 'starting_hour field is required.',
-      'ending_hour.required' => 'ending_hour field is required.'
+    return response()->json([
+      'data' => [
+        'routine' => Routine::paginate(
+          $perPage = $request->query('perPage', 10),
+          $column = [
+            'id',
+            'name',
+            'email',
+            'user_information'
+          ],
+        ),
+      ],
+      'message' => 'routine List Created',
     ]);
+  }
 
-    Routine::create([
-      'class_id' => $validated['class_id'],
-      'section_id' => $validated['section_id'],
-      'subject_id' => $validated['subject_id'],
-      'routine_creator' => $validated['routine_creator'],
-      'room_id' => $validated['room_id'],
-      'day' => $validated['day'],
-      'starting_hour' => $validated['starting_hour'],
-      'starting_minute' => $validated['starting_minute'],
-      'ending_hour' => $validated['ending_hour'],
-      'ending_minute' => $validated['ending_minute'],
-      'school_id' => auth()->user()->school_id
+  public function store_routine(RoutineRequest $request)
+  {
+    return response()->json([
+      'data' => [
+        'routine' => Routine::create($request->validated()),
+      ],
+      'message' => 'routine store successful.',
     ]);
-
-    return redirect()->route('admin.routine');
   }
 
-  public function edit_routine(string $id)
+  public function routine_show(Routine $routine)
   {
-    $routine = Routine::find($id);
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    $sections = Section::get()->where('school_id', auth()->user()->school_id);
-    $class_rooms = ClassRoom::get()->where('school_id', auth()->user()->school_id);
-    $subjects = Subject::get()->where('school_id', auth()->user()->school_id);
-    $routine_creator = User::where('role_id', 2)->where('school_id', auth()->user()->school_id)->get();
-    return view('admin.routine.edit_routine', ['routine' => $routine, 'classes' => $classes, 'sections' => $sections, 'class_rooms' => $class_rooms, 'subjects' => $subjects, 'routine_creator' => $routine_creator]);
-  }
-
-  public function update_routine(Request $request, string $id)
-  {
-    $data = $request->all();
-
-    Routine::where('id', $id)->update([
-      'class_id' => $data['class_id'],
-      'section_id' => $data['section_id'],
-      'subject_id' => $data['subject_id'],
-      'routine_creator' => $data['routine_creator'],
-      'room_id' => $data['room_id'],
-      'day' => $data['day'],
-      'starting_hour' => $data['starting_hour'],
-      'starting_minute' => $data['starting_minute'],
-      'ending_hour' => $data['ending_hour'],
-      'ending_minute' => $data['ending_minute'],
-      'school_id' => auth()->user()->school_id
+    return response()->json([
+      'data' => [
+        'routine' => $routine,
+      ],
+      'message' => 'routine show successful.',
     ]);
-
-    return redirect()->route('admin.routine');
   }
 
-  public function routine_destroy(string $id)
+  public function update_routine(RoutineUpdateRequest $request, Routine $routine)
   {
-    $routine = Routine::find($id);
+    $routine->update($request->validated());
+    return response()->json([
+      'data' => [
+        'routine' => $routine,
+      ],
+      'message' => 'routine update successful.',
+    ]);
+  }
+
+  public function routine_destroy(Routine $routine)
+  {
     $routine->delete();
-    return redirect()->route('admin.routine');
+    return response()->json([
+      'data' => [
+        'routine' => $routine,
+      ],
+      'message' => 'routine deleted Successful.',
+    ]);
   }
 
   //Syllabus
-  public function syllabus(Request $request)
+  public function syllabus_list(Request $request): JsonResponse
   {
-    $search = $request['search'] ?? '';
-
-    if($search != ''){
-      $syllabuses = Syllabus::where(function ($query) use($search) {
-        $query->where('title', 'LIKE', "%{$search}%")
-        ->where('school_id', auth()->user()->school_id);
-      })->paginate(10);
-
-    }else {
-      $syllabuses = Syllabus::where('school_id', auth()->user()->school_id)->paginate(10);
-    }
-
-    return view('admin.syllabus.syllabus_list', ['syllabuses' => $syllabuses, 'search' => $search]);
-  }
-
-  public function create_syllabus()
-  {
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    $sections = Section::get()->where('school_id', auth()->user()->school_id);
-    $subjects = Subject::get()->where('school_id', auth()->user()->school_id);
-    return view('admin.syllabus.add_syllabus', ['subjects' => $subjects, 'classes' => $classes, 'sections' => $sections]);
-  }
-
-  public function store_syllabus(Request $request)
-  {
-    $validated = $request->validate([
-      'class_id' => 'required',
-      'section_id' => 'required',
-      'subject_id' => 'required',
-      'title' => 'required',
-      'image' => 'required'
-    ],[
-      'class_id.required' => 'Class Id field is required.',
-      'section_id.required' => 'section_id field is required.',
-      'subject_id.required' => 'subject_id field is required.',
-      'title.required' => 'title field is required.',
-      'image.required' => 'image field is required.'
+    return response()->json([
+      'data' => [
+        'syllabus' => Syllabus::paginate(
+          $perPage = $request->query('perPage', 10),
+          $column = [
+            'id',
+            'name',
+            'email',
+            'user_information'
+          ],
+        ),
+      ],
+      'message' => 'syllabus List Created',
     ]);
+  }
 
-    if(!empty($validated['image'])){
-      $file = $validated['image'];
-      $filename = time(). '.'. $file->getClientOriginalExtension();
-      $file->move('syllabus_images/', $filename);
-      $image = $filename;
-    }else {
-      $image = '';
-    }
-
-    Syllabus::create([
-      'title' => $validated['title'],
-      'file' => $image,
-      'subject_id' => $validated['subject_id'],
-      'class_id' => $validated['class_id'],
-      'section_id' => $validated['section_id'],
-      'school_id' => auth()->user()->school_id
+  public function store_syllabus(SyllabusRequest $request)
+  {
+    return response()->json([
+      'data' => [
+        'syllabus' => Syllabus::create($request->validated()),
+      ],
+      'message' => 'syllabus store successful.',
     ]);
-    return redirect()->route('admin.syllabus');
   }
 
-  public function edit_syllabus(string $id)
+  public function syllabus_show(Syllabus $syllabus)
   {
-    $syllabus = Syllabus::find($id);
-    $classes = Classes::get()->where('school_id', auth()->user()->school_id);
-    $sections = Section::get()->where('school_id', auth()->user()->school_id);
-    $subjects = Subject::get()->where('school_id', auth()->user()->school_id);
-    return view('admin.syllabus.edit_syllabus', ['syllabus' => $syllabus, 'subjects' => $subjects, 'classes' => $classes, 'sections' => $sections]);
-  }
-
-  public function update_syllabus(Request $request, string $id)
-  {
-    $data = $request->all();
-
-    if(!empty($data['image'])){
-      $file = $data['image'];
-      $filename = time(). '.'. $file->getClientOriginalExtension();
-      $file->move('syllabus_images/', $filename);
-      $image = $filename;
-    }else {
-      $exisisting_image = Syllabus::where('id', $id)->value('file');
-      if($exisisting_image !== ''){
-        $image = $exisisting_image;
-      }else {
-        $image = '';
-      }
-    }
-
-    Syllabus::where('id', $id)->update([
-      'title' => $data['title'],
-      'file' => $image,
-      'subject_id' => $data['subject_id'],
-      'class_id' => $data['class_id'],
-      'section_id' => $data['section_id'],
-      'school_id' => auth()->user()->school_id
+    return response()->json([
+      'data' => [
+        'syllabus' => $syllabus,
+      ],
+      'message' => 'syllabus show successful.',
     ]);
-    return redirect()->route('admin.syllabus');
   }
 
-  public function syllabus_destroy(string $id)
+  public function update_syllabus(SyllabusUpdateRequest $request, Syllabus $syllabus)
   {
-    $syllabus = Syllabus::find($id);
+    $syllabus->update($request->validated());
+    return response()->json([
+      'data' => [
+        'syllabus' => $syllabus,
+      ],
+      'message' => 'syllabus update successful.',
+    ]);
+  }
+
+  public function syllabus_destroy(Syllabus $syllabus)
+  {
     $syllabus->delete();
-    return redirect()->route('admin.syllabus');
+    return response()->json([
+      'data' => [
+        'syllabus' => $syllabus,
+      ],
+      'message' => 'syllabus deleted Successful.',
+    ]);
   }
 
 
