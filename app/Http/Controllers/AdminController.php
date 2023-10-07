@@ -108,8 +108,7 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'student' => User::where('role_id', 3)->paginate(
-          $perPage = $request->query('perPage', 10),
+        'student' => User::where('role_id', 3)->get(
           $column = [
             'id',
             'name',
@@ -180,8 +179,7 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'parent' => User::where('role_id', 4)->paginate(
-          $perPage = $request->query('perPage', 10),
+        'parent' => User::where('role_id', 4)->get(
           $column = [
             'id',
             'name',
@@ -250,8 +248,7 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'teacher' => User::where('role_id', 2)->paginate(
-          $perPage = $request->query('perPage', 10),
+        'teacher' => User::where('role_id', 2)->get(
           $column = [
             'id',
             'name',
@@ -320,8 +317,7 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'admin' => User::where('role_id', 1)->paginate(
-          $perPage = $request->query('perPage', 10),
+        'admin' => User::where('role_id', 1)->where('school_id', 1)->get(
           $column = [
             'id',
             'name',
@@ -407,8 +403,7 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'grade' => Grade::paginate(
-          $perPage = $request->query('perPage', 10),
+        'grade' => Grade::get(
           $column = [
             'id',
             'name',
@@ -477,8 +472,7 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'subject' => Subject::paginate(
-          $perPage = $request->query('perPage', 10),
+        'subject' => Subject::get(
           $column = [
             'id',
             'name'
@@ -541,13 +535,10 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'class' => Classes::paginate(
-          $perPage = $request->query('perPage', 10),
+        'class' => Classes::get(
           $column = [
             'id',
-            'name',
-            'email',
-            'user_information'
+            'name'
           ],
         ),
       ],
@@ -559,13 +550,18 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'class' => Classes::create($request->validated()),
+        $validation = $request->validated(),
+        'class' => Classes::create([
+          'name' => $validation['name'],
+          'section_id' => '1',
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'class store successful.',
     ]);
   }
 
-  public function class_Show(Classes $class)
+  public function class_show(Classes $class)
   {
     return response()->json([
       'data' => [
@@ -574,19 +570,6 @@ class AdminController extends Controller
       'message' => 'class show successful.',
     ]);
   }
-
-  //Section
-  public function section_update(SectionUpdateRequest $request, Section $section)
-  {
-    $section->update($request->validated());
-    return response()->json([
-      'data' => [
-        'section' => $section,
-      ],
-      'message' => 'section update successful.',
-    ]);
-  }
- //Section end
 
   public function class_update(ClassesUpdateRequest $request, Classes $class)
   {
@@ -599,7 +582,7 @@ class AdminController extends Controller
     ]);
   }
 
-  public function class_destory(Classes $class)
+  public function class_destroy(Classes $class)
   {
     $class->delete();
     return response()->json([
@@ -610,18 +593,83 @@ class AdminController extends Controller
     ]);
   }
 
+  //Section
+  public function section_list(Request $request): JsonResponse
+  {
+    return response()->json([
+      'data' => [
+        'section' => Section::get(
+          $column = [
+            'id',
+            'name'
+          ],
+        ),
+      ],
+      'message' => 'section List Created',
+    ]);
+  }
+
+  public function section_show(Section $section)
+  {
+    return response()->json([
+      'data' => [
+        'section' => $section,
+      ],
+      'message' => 'section show successful.',
+    ]);
+  }
+
+  public function section_store(SectionRequest $request)
+  {
+    return response()->json([
+      'data' => [
+        $validation = $request->validated(),
+        'section' => Section::create([
+          'name' => $validation['name'],
+          'school_id' => '1'
+        ]),
+      ],
+      'message' => 'section store successful.',
+    ]);
+  }
+
+  public function section_update(SectionUpdateRequest $request, Section $section)
+  {
+    $section->update($request->validated());
+    return response()->json([
+      'data' => [
+        'section' => $section,
+      ],
+      'message' => 'section update successful.',
+    ]);
+  }
+
+  public function section_destroy(Section $section)
+  {
+    $section->delete();
+    return response()->json([
+      'data' => [
+        'section' => $section,
+      ],
+      'message' => 'section deleted Successful.',
+    ]);
+  }
+ //Section end
+
   //Exam
   public function exam_list(Request $request): JsonResponse
   {
     return response()->json([
       'data' => [
-        'exam' => Exam::paginate(
-          $perPage = $request->query('perPage', 10),
+        'exam' => Exam::get(
           $column = [
             'id',
             'name',
-            'email',
-            'user_information'
+            'exam_type',
+            'starting_time',
+            'ending_time',
+            'total_marks',
+            'status'
           ],
         ),
       ],
@@ -633,7 +681,18 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'exam' => Exam::create($request->validated()),
+        $validated = $request->validated(),
+        'exam' => Exam::create([
+          'name' => $validated['name'],
+          'exam_type' => $validated['exam_type'],
+          'starting_time' => $validated['starting_time'],
+          'ending_time' => $validated['ending_time'],
+          'total_marks' => $validated['total_marks'],
+          'status' => 'pending',
+          'class_id' => '1',
+          'section_id' => '1',
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'exam store successful.',
     ]);
@@ -660,7 +719,7 @@ class AdminController extends Controller
     ]);
   }
 
-  public function exam_destory(Exam $exam)
+  public function exam_destroy(Exam $exam)
   {
     $exam->delete();
     return response()->json([
@@ -676,13 +735,12 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'marks' => Mark::paginate(
-          $perPage = $request->query('perPage', 10),
+        'marks' => Mark::get(
           $column = [
             'id',
-            'name',
-            'email',
-            'user_information'
+            'marks',
+            'grade_point',
+            'comment'
           ],
         ),
       ],
@@ -690,11 +748,22 @@ class AdminController extends Controller
     ]);
   }
 
-  public function store_marks(MarkRequest $request)
+  public function marks_store(MarkRequest $request)
   {
     return response()->json([
       'data' => [
-        'marks' => Mark::create($request->validated()),
+        $validated = $request->validated(),
+        'marks' => Mark::create([
+          'marks' => $validated['marks'],
+          'grade_point' => $validated['grade_point'],
+          'comment' => $validated['comment'],
+          'user_id' => '3',
+          'exam_id' => '1',
+          'class_id' => '1',
+          'section_id' => '1',
+          'subject_id' => '1',
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'marks store successful.',
     ]);
@@ -710,7 +779,7 @@ class AdminController extends Controller
     ]);
   }
 
-  public function update_marks(MarkUpdateRequest $request, Mark $marks)
+  public function marks_update(MarkUpdateRequest $request, Mark $marks)
   {
     $marks->update($request->validated());
     return response()->json([
@@ -737,11 +806,9 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'routine' => Routine::paginate(
-          $perPage = $request->query('perPage', 10),
+        'routine' => Routine::get(
           $column = [
             'id',
-            'routine_creator',
             'day',
             'starting_hour',
             'starting_minute',
@@ -765,9 +832,9 @@ class AdminController extends Controller
           'starting_minute' => $validated['starting_minute'],
           'ending_hour' => $validated['ending_hour'],
           'ending_minute' => $validated['ending_minute'],
-          'routine_creator' => '4',
+          'routine_creator' => '2',
           'class_id' => '1',
-          'subject_id' => '13',
+          'subject_id' => '1',
           'section_id' => '1',
           'room_id' => '1',
           'school_id' => '1'
@@ -814,8 +881,7 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'syllabus' => Syllabus::paginate(
-          $perPage = $request->query('perPage', 10),
+        'syllabus' => Syllabus::get(
           $column = [
             'id',
             'title',

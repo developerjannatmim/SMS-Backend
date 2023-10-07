@@ -1,0 +1,37 @@
+### List
+GET http://127.0.0.1:8000/api/exams
+Accept: application/json
+
+### Store
+POST http://127.0.0.1:8000/api/exams
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "test",
+  "exam_type": "offline",
+  "starting_time": "10:00",
+  "ending_time": "12:00",
+  "total_marks": "100"
+}
+
+### Show
+GET http://127.0.0.1:8000/api/exams/1
+Accept: application/json
+
+### Update
+PUT http://127.0.0.1:8000/api/exams/3
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "final",
+  "exam_type": "online",
+  "starting_time": "10:00",
+  "ending_time": "12:00",
+  "total_marks": "100"
+}
+
+### Delete
+DELETE  http://127.0.0.1:8000/api/exams/4
+Accept: application/json

@@ -139,17 +139,27 @@ Route::controller(AdminController::class)->group(function () {
   });
 
   //Section
+  //Section list routes
+    Route::group(['prefix' => 'sections'], function () {
+      Route::get('', 'section_list');
+      Route::post('', 'section_store');
+      Route::group(['prefix' => '{section}'], function () {
+        Route::get('', 'section_show');
+        Route::put('', 'section_update');
+        Route::delete('', 'section_destroy');
+      });
+    });
   // Route::get('admin/section/edit/{id}', 'edit_section')->name('admin.edit.section');
   // Route::post('admin/section/update/{id}', 'section_update')->name('admin.update.section');
 
   //Class list routes
   Route::group(['prefix' => 'classes'], function () {
-    Route::get('', 'classes_list');
-    Route::post('', 'classes_store');
-    Route::group(['prefix' => '{classes}'], function () {
-      Route::get('', 'classes_show');
-      Route::put('', 'classes_update');
-      Route::delete('', 'classes_destroy');
+    Route::get('', 'class_list');
+    Route::post('', 'class_store');
+    Route::group(['prefix' => '{class}'], function () {
+      Route::get('', 'class_show');
+      Route::put('', 'class_update');
+      Route::delete('', 'class_destroy');
     });
   });
 

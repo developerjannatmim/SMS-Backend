@@ -42,8 +42,6 @@ class Exam extends Model
         return $this->hasMany(Grade::class);
     }
 
-    protected $table = 'exam';
-
     public function getStartingDateAttribute($date)
 	{
 		return $this->attributes['starting_date'] = date('Y-m-d', $date);

@@ -32,7 +32,9 @@ class MarkUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'marks' => 'required',
+            'grade_point' => 'required',
+            'comment' => 'required'
         ];
     }
 }

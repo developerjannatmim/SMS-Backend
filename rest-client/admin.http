@@ -8,9 +8,9 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "admin",
-  "email": "admin@b.co",
-  "password": "admin12",
+  "name": "abdul",
+  "email": "abdul@b.co",
+  "password": "123456",
   "user_information": "{'address':'address','phone':'0123456789','birthday':'9-03-02','gender':'gender','photo':'photo','blood_group':'blood_group'}"
 }
 

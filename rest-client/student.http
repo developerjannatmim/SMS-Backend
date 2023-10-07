@@ -10,7 +10,7 @@ Content-Type: application/json
 {
   "name": "student",
   "email": "student@b.co",
-  "password": "student12i34",
+  "password": "123456",
   "user_information": "{'address':'address','phone':'0123456789','birthday':'9-03-02','gender':'gender','photo':'photo','blood_group':'blood_group'}"
 }
 
@@ -19,14 +19,14 @@ GET http://127.0.0.1:8000/api/students/20
 Accept: application/json
 
 ### Update
-PUT http://127.0.0.1:8000/api/students/1
+PUT http://127.0.0.1:8000/api/students/15
 Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "student",
-  "email": "student@b.co",
-  "password": "1234student",
+  "name": "mim",
+  "email": "mim@b.co",
+  "password": "123456",
   "user_information": "{'address':'addregss','phone':'0123456g789','birthday':'9-03-02','gender':'gender','photo':'photo','blood_group':'blood_group'}"
 }
 

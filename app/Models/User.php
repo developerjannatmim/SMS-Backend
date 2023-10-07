@@ -77,14 +77,14 @@ class User extends Authenticatable
 
 
 	//mutetor
-	public function getNameAttribute($value)
-	{
-		return $this->attributes['name'] = ucfirst($value);
-	}
+	// public function getNameAttribute($value)
+	// {
+	// 	return $this->attributes['name'] = ucfirst($value);
+	// }
 
-	public function getBirthdayAttribute($date)
-	{
-		return $this->attributes['birthday'] = date('Y-m-d', $date);
-	}
+	// public function getBirthdayAttribute($date)
+	// {
+	// 	return $this->attributes['birthday'] = date('Y-m-d', $date);
+	// }
 
 }

@@ -1,0 +1,29 @@
+### List
+GET http://127.0.0.1:8000/api/classes
+Accept: application/json
+
+### Store
+POST http://127.0.0.1:8000/api/classes
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "nine"
+}
+
+### Show
+GET http://127.0.0.1:8000/api/classes/1
+Accept: application/json
+
+### Update
+PUT http://127.0.0.1:8000/api/classes/3
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "eight"
+}
+
+### Delete
+DELETE  http://127.0.0.1:8000/api/classes/5
+Accept: application/json

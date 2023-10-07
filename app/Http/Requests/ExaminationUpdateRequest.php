@@ -32,7 +32,11 @@ class ExaminationUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required',
+            'exam_type' => 'required',
+            'starting_time' => 'required',
+            'ending_time' => 'required',
+            'total_marks' => 'required'
         ];
     }
 }

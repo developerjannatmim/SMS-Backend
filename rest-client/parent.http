@@ -8,9 +8,9 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "parent1",
-  "email": "parent@b.co1",
-  "password": "parent12i341",
+  "name": "parent",
+  "email": "parent@b.co",
+  "password": "123456",
   "user_information": "{'address':'address','phone':'0123456789','birthday':'9-03-02','gender':'gender','photo':'photo','blood_group':'blood_group','designation':'doctor','child_name':'rabiya'}"
 }
 
@@ -19,14 +19,14 @@ GET http://127.0.0.1:8000/api/parents/15
 Accept: application/json
 
 ### Update
-PUT http://127.0.0.1:8000/api/parents/12
+PUT http://127.0.0.1:8000/api/parents/13
 Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "parents",
-  "email": "parent@b.co",
-  "password": "1234parent",
+  "name": "jannat",
+  "email": "jannat@b.co",
+  "password": "123456",
   "user_information": "{'address':'addregss','phone':'0123456g789','birthday':'9-03-02','gender':'gender','photo':'photo','blood_group':'blood_group','designation':'doctor','child_name':'rabiya'}"
 }
 

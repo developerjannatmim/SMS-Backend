@@ -18,6 +18,7 @@ class Classes extends Model
      */
     protected $fillable = [
         'name',
+        'section_id',
         'school_id'
     ];
 
