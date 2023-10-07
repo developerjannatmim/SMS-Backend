@@ -336,10 +336,21 @@ class AdminController extends Controller
     return response()->json([
       'data' => [
         $validated = $request->validated(),
+
+        $info = array(
+          'gender' => $validated['gender'],
+          'blood_group' => $validated['blood_group'],
+          'birthday' => date($validated['birthday']),
+          'phone' => $validated['phone'],
+          'address' => $validated['address'],
+          'photo' => $validated['photo']
+        ),
+        $validated['user_information'] = json_encode($info),
+
         'admin' => User::create([
           'name' => $validated['name'],
           'email' => $validated['email'],
-          'password' => $validated['password'],
+          'password' => bcrypt($validated['password']),
           'user_information' => $validated['user_information'],
           'role_id' => '1',
           'school_id' => '1'
