@@ -365,7 +365,7 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'amin' => $admin,
+        'admin' => $admin,
       ],
       'message' => 'Admin show successful.',
     ]);
@@ -546,7 +546,7 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'class' => Classes::get(
+        'classes' => Classes::get(
           $column = [
             'id',
             'name'
@@ -562,7 +562,7 @@ class AdminController extends Controller
     return response()->json([
       'data' => [
         $validation = $request->validated(),
-        'class' => Classes::create([
+        'classes' => Classes::create([
           'name' => $validation['name'],
           'section_id' => '1',
           'school_id' => '1'
@@ -572,33 +572,33 @@ class AdminController extends Controller
     ]);
   }
 
-  public function class_show(Classes $class)
+  public function class_show(Classes $classes)
   {
     return response()->json([
       'data' => [
-        'class' => $class,
+        'classes' => $classes,
       ],
       'message' => 'class show successful.',
     ]);
   }
 
-  public function class_update(ClassesUpdateRequest $request, Classes $class)
+  public function class_update(ClassesUpdateRequest $request, Classes $classes)
   {
-    $class->update($request->validated());
+    $classes->update($request->validated());
     return response()->json([
       'data' => [
-        'class' => $class,
+        'classes' => $classes,
       ],
       'message' => 'class update successful.',
     ]);
   }
 
-  public function class_destroy(Classes $class)
+  public function class_destroy(Classes $classes)
   {
-    $class->delete();
+    $classes->delete();
     return response()->json([
       'data' => [
-        'class' => $class,
+        'classes' => $classes,
       ],
       'message' => 'class deleted Successful.',
     ]);
