@@ -8,10 +8,15 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "parent",
-  "email": "parent@b.co",
+  "name": "parent11",
+  "email": "parent11@b.co",
   "password": "123456",
-  "user_information": "{'address':'address','phone':'0123456789','birthday':'9-03-02','gender':'gender','photo':'photo','blood_group':'blood_group','designation':'doctor','child_name':'rabiya'}"
+  "gender": "male",
+  "birthday": "birthday",
+  "phone": "phone",
+  "address": "address",
+  "blood_group": "blood_group",
+  "photo": "photo.jpg"
 }
 
 ### Show
@@ -24,10 +29,15 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "jannat",
-  "email": "jannat@b.co",
+  "name": "jannatul",
+  "email": "jannatul@b.co",
   "password": "123456",
-  "user_information": "{'address':'addregss','phone':'0123456g789','birthday':'9-03-02','gender':'gender','photo':'photo','blood_group':'blood_group','designation':'doctor','child_name':'rabiya'}"
+  "gender": "female",
+  "birthday": "birthday",
+  "phone": "phone",
+  "address": "address",
+  "blood_group": "blood_group",
+  "photo": "photo.jpg"
 }
 
 ### Delete

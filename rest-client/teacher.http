@@ -8,10 +8,15 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "teacher",
-  "email": "teacher@b.co",
+  "name": "teacher11",
+  "email": "teacher11@b.co",
   "password": "123456",
-  "user_information": "{'address':'address','phone':'0123456789','birthday':'9-03-02','gender':'gender','photo':'photo','blood_group':'blood_group','designation':'teacher'}"
+  "gender": "male",
+  "birthday": "birthday",
+  "phone": "phone",
+  "address": "address",
+  "blood_group": "blood_group",
+  "photo": "photo.jpg"
 }
 
 ### Show
@@ -19,15 +24,20 @@ GET http://127.0.0.1:8000/api/teachers/1
 Accept: application/json
 
 ### Update
-PUT http://127.0.0.1:8000/api/teachers/17
+PUT http://127.0.0.1:8000/api/teachers/25
 Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "nazim",
-  "email": "nazim@b.co",
+  "name": "nazim11",
+  "email": "nazim11@b.co",
   "password": "123456",
-  "user_information": "{'address':'addregss','phone':'0123456g789','birthday':'9-03-02','gender':'gender','photo':'photo','blood_group':'blood_group'}"
+  "gender": "male",
+  "birthday": "birthday",
+  "phone": "phone",
+  "address": "address",
+  "blood_group": "blood_group",
+  "photo": "photo.jpg"
 }
 
 ### Delete

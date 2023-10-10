@@ -85,12 +85,12 @@ Route::controller(AdminController::class)->group(function () {
 
   //Marks route
   Route::group(['prefix' => 'marks'], function () {
-    Route::get('', 'marks_list');
-    Route::post('', 'marks_store');
-    Route::group(['prefix' => '{marks}'], function () {
-      Route::get('', 'marks_show');
-      Route::put('', 'marks_update');
-      Route::delete('', 'marks_destroy');
+    Route::get('', 'mark_list');
+    Route::post('', 'mark_store');
+    Route::group(['prefix' => '{mark}'], function () {
+      Route::get('', 'mark_show');
+      Route::put('', 'mark_update');
+      Route::delete('', 'mark_destroy');
     });
   });
 

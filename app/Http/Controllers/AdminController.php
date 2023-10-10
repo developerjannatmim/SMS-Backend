@@ -108,7 +108,7 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'student' => User::where('role_id', 3)->get(
+        'students' => User::where('role_id', 3)->where('school_id', 1)->get(
           $column = [
             'id',
             'name',
@@ -117,7 +117,7 @@ class AdminController extends Controller
           ],
         ),
       ],
-      'message' => 'student List Created',
+      'message' => 'students List Created',
     ]);
   }
 
@@ -128,10 +128,21 @@ class AdminController extends Controller
     return response()->json([
       'data' => [
         $validated = $request->validated(),
+
+        $info = array(
+          'gender' => $validated['gender'],
+          'blood_group' => $validated['blood_group'],
+          'birthday' => date($validated['birthday']),
+          'phone' => $validated['phone'],
+          'address' => $validated['address'],
+          'photo' => $validated['photo']
+        ),
+        $validated['user_information'] = json_encode($info),
+
         'student' => User::create([
           'name' => $validated['name'],
           'email' => $validated['email'],
-          'password' => $validated['password'],
+          'password' => bcrypt($validated['password']),
           'user_information' => $validated['user_information'],
           'role_id' => '3',
           'school_id' => '1'
@@ -197,10 +208,21 @@ class AdminController extends Controller
     return response()->json([
       'data' => [
         $validated = $request->validated(),
+
+        $info = array(
+          'gender' => $validated['gender'],
+          'blood_group' => $validated['blood_group'],
+          'birthday' => date($validated['birthday']),
+          'phone' => $validated['phone'],
+          'address' => $validated['address'],
+          'photo' => $validated['photo']
+        ),
+        $validated['user_information'] = json_encode($info),
+
         'parent' => User::create([
           'name' => $validated['name'],
           'email' => $validated['email'],
-          'password' => $validated['password'],
+          'password' => bcrypt($validated['password']),
           'user_information' => $validated['user_information'],
           'role_id' => '4',
           'school_id' => '1'
@@ -266,10 +288,21 @@ class AdminController extends Controller
     return response()->json([
       'data' => [
         $validated = $request->validated(),
+
+        $info = array(
+          'gender' => $validated['gender'],
+          'blood_group' => $validated['blood_group'],
+          'birthday' => date($validated['birthday']),
+          'phone' => $validated['phone'],
+          'address' => $validated['address'],
+          'photo' => $validated['photo']
+        ),
+        $validated['user_information'] = json_encode($info),
+
         'teacher' => User::create([
           'name' => $validated['name'],
           'email' => $validated['email'],
-          'password' => $validated['password'],
+          'password' => bcrypt($validated['password']),
           'user_information' => $validated['user_information'],
           'role_id' => '2',
           'school_id' => '1'
@@ -546,10 +579,11 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'classes' => Classes::get(
+        'classes' => Classes::where('school_id', 1)->get(
           $column = [
             'id',
-            'name'
+            'name',
+            'section_id'
           ],
         ),
       ],
@@ -672,7 +706,7 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'exam' => Exam::get(
+        'exam' => Exam::where('school_id', 1)->get(
           $column = [
             'id',
             'name',
@@ -742,11 +776,11 @@ class AdminController extends Controller
   }
 
   //Marks
-  public function marks_list(Request $request): JsonResponse
+  public function mark_list(Request $request): JsonResponse
   {
     return response()->json([
       'data' => [
-        'marks' => Mark::get(
+        'mark' => Mark::get(
           $column = [
             'id',
             'marks',
@@ -759,12 +793,12 @@ class AdminController extends Controller
     ]);
   }
 
-  public function marks_store(MarkRequest $request)
+  public function mark_store(MarkRequest $request)
   {
     return response()->json([
       'data' => [
         $validated = $request->validated(),
-        'marks' => Mark::create([
+        'mark' => Mark::create([
           'marks' => $validated['marks'],
           'grade_point' => $validated['grade_point'],
           'comment' => $validated['comment'],
@@ -780,33 +814,33 @@ class AdminController extends Controller
     ]);
   }
 
-  public function marks_show(Mark $marks)
+  public function mark_show(Mark $mark)
   {
     return response()->json([
       'data' => [
-        'marks' => $marks,
+        'mark' => $mark,
       ],
       'message' => 'marks show successful.',
     ]);
   }
 
-  public function marks_update(MarkUpdateRequest $request, Mark $marks)
+  public function mark_update(MarkUpdateRequest $request, Mark $mark)
   {
-    $marks->update($request->validated());
+    $mark->update($request->validated());
     return response()->json([
       'data' => [
-        'marks' => $marks,
+        'mark' => $mark,
       ],
       'message' => 'marks update successful.',
     ]);
   }
 
-  public function marks_destroy(Mark $marks)
+  public function mark_destroy(Mark $mark)
   {
-    $marks->delete();
+    $mark->delete();
     return response()->json([
       'data' => [
-        'marks' => $marks,
+        'mark' => $mark,
       ],
       'message' => 'marks deleted Successful.',
     ]);

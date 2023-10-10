@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 ### Show
-GET http://127.0.0.1:8000/api/admin/17
+GET http://127.0.0.1:8000/api/admin/1
 Accept: application/json
 
 ### Update
