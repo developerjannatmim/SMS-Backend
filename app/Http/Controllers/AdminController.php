@@ -16,6 +16,7 @@ use App\Http\Requests\ParentRequest;
 use App\Http\Requests\ParentUpdateRequest;
 use App\Http\Requests\RoutineRequest;
 use App\Http\Requests\RoutineUpdateRequest;
+use App\Http\Requests\SchoolUpdateRequest;
 use App\Http\Requests\SectionRequest;
 use App\Http\Requests\SectionUpdateRequest;
 use App\Http\Requests\StudentRequest;
@@ -426,22 +427,6 @@ class AdminController extends Controller
     ]);
   }
 
-  //School
-  public function school_edit()
-  {
-    $school = auth()->user()->school;
-    return view('admin.settings.school_settings', ['school' => $school]);
-  }
-
-  public function school_update(Request $request)
-  {
-    $data = $request->only('title', 'email', 'phone', 'address', 'school_info', 'status');
-
-    School::where('id', auth()->user()->school_id)->update($data);
-
-    return redirect()->back()->with('success', 'School updated Successfully');
-  }
-
   //Grades
   public function grade_list(Request $request): JsonResponse
   {
@@ -519,7 +504,8 @@ class AdminController extends Controller
         'subject' => Subject::get(
           $column = [
             'id',
-            'name'
+            'name',
+            'class_id'
           ],
         ),
       ],
@@ -606,33 +592,33 @@ class AdminController extends Controller
     ]);
   }
 
-  public function class_show(Classes $classes)
+  public function class_show(Classes $class)
   {
     return response()->json([
       'data' => [
-        'classes' => $classes,
+        'classes' => $class,
       ],
       'message' => 'class show successful.',
     ]);
   }
 
-  public function class_update(ClassesUpdateRequest $request, Classes $classes)
+  public function class_update(ClassesUpdateRequest $request, Classes $class)
   {
-    $classes->update($request->validated());
+    $class->update($request->validated());
     return response()->json([
       'data' => [
-        'classes' => $classes,
+        'classes' => $class,
       ],
       'message' => 'class update successful.',
     ]);
   }
 
-  public function class_destroy(Classes $classes)
+  public function class_destroy(Classes $class)
   {
-    $classes->delete();
+    $class->delete();
     return response()->json([
       'data' => [
-        'classes' => $classes,
+        'classes' => $class,
       ],
       'message' => 'class deleted Successful.',
     ]);
@@ -714,7 +700,9 @@ class AdminController extends Controller
             'starting_time',
             'ending_time',
             'total_marks',
-            'status'
+            'status',
+            'class_id',
+            'section_id'
           ],
         ),
       ],
@@ -785,7 +773,12 @@ class AdminController extends Controller
             'id',
             'marks',
             'grade_point',
-            'comment'
+            'comment',
+            'user_id',
+            'exam_id',
+            'class_id',
+            'section_id',
+            'subject_id'
           ],
         ),
       ],
@@ -858,7 +851,12 @@ class AdminController extends Controller
             'starting_hour',
             'starting_minute',
             'ending_hour',
-            'ending_minute'
+            'ending_minute',
+            'routine_creator',
+            'class_id',
+            'subject_id',
+            'section_id',
+            'room_id'
           ],
         ),
       ],
@@ -930,6 +928,9 @@ class AdminController extends Controller
           $column = [
             'id',
             'title',
+            'class_id',
+            'subject_id',
+            'section_id',
             'file'
           ],
         ),
@@ -985,6 +986,57 @@ class AdminController extends Controller
         'syllabus' => $syllabus,
       ],
       'message' => 'syllabus deleted Successful.',
+    ]);
+  }
+
+  //School
+  public function school_list(Request $request): JsonResponse
+  {
+    return response()->json([
+      'data' => [
+        'school' => School::get(
+          $column = [
+            'id',
+            'title',
+            'email',
+            'phone',
+            'school_info',
+            'status'
+          ],
+        ),
+      ],
+      'message' => 'syllabus List Created',
+    ]);
+  }
+  public function school_show(School $school)
+  {
+    return response()->json([
+      'data' => [
+        'school' => $school,
+      ],
+      'message' => 'school show successful.',
+    ]);
+  }
+
+  public function school_update(SchoolUpdateRequest $request, School $school)
+  {
+    $school->update($request->validated());
+    return response()->json([
+      'data' => [
+        'school' => $school,
+      ],
+      'message' => 'school update successful.',
+    ]);
+  }
+
+  public function school_destroy(School $school)
+  {
+    $school->delete();
+    return response()->json([
+      'data' => [
+        'school' => $school,
+      ],
+      'message' => 'school deleted Successful.',
     ]);
   }
 

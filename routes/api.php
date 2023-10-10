@@ -79,7 +79,15 @@ Route::controller(AdminController::class)->group(function () {
     });
   });
 
-  //School route
+//School route
+Route::group(['prefix' => 'schools'], function () {
+  Route::get('', 'school_list');
+  Route::group(['prefix' => '{school}'], function () {
+    Route::get('', 'school_show');
+    Route::put('', 'school_update');
+    Route::delete('', 'school_destroy');
+  });
+});
   // Route::get('admin/school/info', 'school_edit')->name('admin.school.info');
   // Route::post('admin/school/update', 'school_update')->name('admin.school.update');
 

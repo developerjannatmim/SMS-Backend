@@ -16,7 +16,7 @@ GET http://127.0.0.1:8000/api/classes/1
 Accept: application/json
 
 ### Update
-PUT http://127.0.0.1:8000/api/classes/3
+PUT http://127.0.0.1:8000/api/classes/6
 Accept: application/json
 Content-Type: application/json
 
