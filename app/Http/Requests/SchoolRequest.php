@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SchoolUpdateRequest extends FormRequest
+class SchoolRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class SchoolUpdateRequest extends FormRequest
     {
         return true;
     }
-    
+
     /**
    * Get the error messages for the defined validation rules.
    *

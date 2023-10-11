@@ -82,6 +82,7 @@ Route::controller(AdminController::class)->group(function () {
 //School route
 Route::group(['prefix' => 'schools'], function () {
   Route::get('', 'school_list');
+  Route::post('', 'school_store');
   Route::group(['prefix' => '{school}'], function () {
     Route::get('', 'school_show');
     Route::put('', 'school_update');

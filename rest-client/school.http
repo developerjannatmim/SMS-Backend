@@ -8,16 +8,15 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "test school",
+  "title": "test school",
   "email": "a@gmail.com",
   "phone": "1234567",
   "address": "kazipara",
-  "school_info": "kazipara",
-  "status": "1"
+  "school_info": "kazipara"
 }
 
 ### Show
-GET http://127.0.0.1:8000/api/schools/1
+GET http://127.0.0.1:8000/api/schools/2
 Accept: application/json
 
 ### Update
@@ -26,12 +25,11 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "test school",
-  "email": "a@gmail.com",
+  "title": "test11 school",
+  "email": "a11@gmail.com",
   "phone": "1234567",
   "address": "kazipara",
-  "school_info": "kazipara",
-  "status": "1"
+  "school_info": "kazipara"
 }
 
 ### Delete

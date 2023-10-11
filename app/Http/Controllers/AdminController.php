@@ -15,6 +15,7 @@ use App\Http\Requests\MarkUpdateRequest;
 use App\Http\Requests\ParentRequest;
 use App\Http\Requests\ParentUpdateRequest;
 use App\Http\Requests\RoutineRequest;
+use App\Http\Requests\SchoolRequest;
 use App\Http\Requests\RoutineUpdateRequest;
 use App\Http\Requests\SchoolUpdateRequest;
 use App\Http\Requests\SectionRequest;
@@ -994,20 +995,41 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
-        'school' => School::get(
+        'school' => School::where('id', 1)->get(
           $column = [
             'id',
             'title',
             'email',
             'phone',
+            'address',
             'school_info',
             'status'
           ],
         ),
       ],
-      'message' => 'syllabus List Created',
+      'message' => 'school List Created',
     ]);
   }
+
+  public function school_store(SchoolRequest $request)
+  {
+    return response()->json([
+      'data' => [
+        $validated = $request->validated(),
+        'school' => School::create([
+          'title' => $validated['title'],
+          'email' => $validated['email'],
+          'phone' => $validated['phone'],
+          'address' => $validated['address'],
+          'school_info' => $validated['school_info'],
+          'status' => '1',
+          'school_id' => '1'
+        ]),
+      ],
+      'message' => 'school store successful.',
+    ]);
+  }
+
   public function school_show(School $school)
   {
     return response()->json([
