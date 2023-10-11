@@ -34,6 +34,7 @@ class RoutineRequest extends FormRequest
     {
         return [
             'day' => 'required',
+            'routine_creator' => 'required',
             'starting_hour' => 'required',
             'starting_minute' => 'required',
             'ending_hour' => 'required',

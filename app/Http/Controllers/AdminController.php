@@ -169,7 +169,27 @@ class AdminController extends Controller
     $student->update($request->validated());
     return response()->json([
       'data' => [
-        'student' => $student,
+        $validated = $request->validated(),
+
+        $info = array(
+          'gender' => $validated['gender'],
+          'blood_group' => $validated['blood_group'],
+          'birthday' => date($validated['birthday']),
+          'phone' => $validated['phone'],
+          'address' => $validated['address'],
+          'photo' => $validated['photo']
+        ),
+
+        $validated['user_information'] = json_encode($info),
+
+        'student' => $student->update([
+          'name' => $validated['name'],
+          'email' => $validated['email'],
+          'password' => bcrypt($validated['password']),
+          'user_information' => $validated['user_information'],
+          'role_id' => '3',
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'student update successful.',
     ]);
@@ -187,7 +207,6 @@ class AdminController extends Controller
   }
 
   //Guardian
-
   public function parent_list(Request $request): JsonResponse
   {
     return response()->json([
@@ -244,12 +263,32 @@ class AdminController extends Controller
     ]);
   }
 
-  public function parent_update(ParentUpdateRequest $request, User $parent)
+  public function parent_update(ParentUpdateRequest $request, User $parent )
   {
-    $parent->update($request->validated());
+    // $parent->update($request->validated());
     return response()->json([
       'data' => [
-        'parent' => $parent,
+        $validated = $request->validated(),
+
+        $info = array(
+          'gender' => $validated['gender'],
+          'blood_group' => $validated['blood_group'],
+          'birthday' => date($validated['birthday']),
+          'phone' => $validated['phone'],
+          'address' => $validated['address'],
+          'photo' => $validated['photo']
+        ),
+
+        $validated['user_information'] = json_encode($info),
+
+        'parent' => $parent->update([
+          'name' => $validated['name'],
+          'email' => $validated['email'],
+          'password' => bcrypt($validated['password']),
+          'user_information' => $validated['user_information'],
+          'role_id' => '4',
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'parent update successful.',
     ]);
@@ -329,7 +368,27 @@ class AdminController extends Controller
     $teacher->update($request->validated());
     return response()->json([
       'data' => [
-        'teacher' => $teacher,
+        $validated = $request->validated(),
+
+        $info = array(
+          'gender' => $validated['gender'],
+          'blood_group' => $validated['blood_group'],
+          'birthday' => date($validated['birthday']),
+          'phone' => $validated['phone'],
+          'address' => $validated['address'],
+          'photo' => $validated['photo']
+        ),
+
+        $validated['user_information'] = json_encode($info),
+
+        'teacher' => $teacher->update([
+          'name' => $validated['name'],
+          'email' => $validated['email'],
+          'password' => bcrypt($validated['password']),
+          'user_information' => $validated['user_information'],
+          'role_id' => '2',
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'teacher update successful.',
     ]);
@@ -411,7 +470,27 @@ class AdminController extends Controller
     $admin->update($request->validated());
     return response()->json([
       'data' => [
-        'admin' => $admin,
+        $validated = $request->validated(),
+
+        $info = array(
+          'gender' => $validated['gender'],
+          'blood_group' => $validated['blood_group'],
+          'birthday' => date($validated['birthday']),
+          'phone' => $validated['phone'],
+          'address' => $validated['address'],
+          'photo' => $validated['photo']
+        ),
+
+        $validated['user_information'] = json_encode($info),
+
+        'admin' => $admin->update([
+          'name' => $validated['name'],
+          'email' => $validated['email'],
+          'password' => bcrypt($validated['password']),
+          'user_information' => $validated['user_information'],
+          'role_id' => '1',
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'Admin update successful.',
     ]);
