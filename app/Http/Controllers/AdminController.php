@@ -434,7 +434,7 @@ class AdminController extends Controller
         $info = array(
           'gender' => $validated['gender'],
           'blood_group' => $validated['blood_group'],
-          'birthday' => date($validated['birthday']),
+          'birthday' => $validated['birthday'],
           'phone' => $validated['phone'],
           'address' => $validated['address'],
           'photo' => $validated['photo']
