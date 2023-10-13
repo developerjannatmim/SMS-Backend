@@ -1,0 +1,9 @@
+### Store
+POST http://127.0.0.1:8000/api/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "abdul1@b.co",
+  "password": "123456"
+}
