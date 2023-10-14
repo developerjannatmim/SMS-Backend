@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Exam extends Model
@@ -26,10 +27,16 @@ class Exam extends Model
         'section_id',
         'school_id'
     ];
-
-    public function class(): HasMany
+    public function class(): BelongsTo
     {
-        return $this->hasMany(Classes::class);
+        return $this->belongsTo(Classes::class, 'class_id', 'id');
+    }
+
+    protected $with = ['section', 'class'];
+
+    public function section(): BelongsTo
+    {
+        return $this->belongsTo(Section::class, 'section_id', 'id');
     }
 
     public function subject(): HasMany

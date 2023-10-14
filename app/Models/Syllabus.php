@@ -33,18 +33,24 @@ class Syllabus extends Model
     return $this->belongsTo(School::class);
   }
 
-  public function classes(): HasOne
+  protected $with = [
+    'section',
+    'subject',
+    'class'
+  ];
+
+  public function section(): BelongsTo
   {
-    return $this->hasOne(Classes::class);
+      return $this->belongsTo(Section::class, 'section_id', 'id');
   }
 
-  public function section(): HasOne
+  public function class(): BelongsTo
   {
-    return $this->hasOne(Section::class);
+      return $this->belongsTo(Classes::class, 'class_id', 'id');
   }
 
-  public function subject(): HasMany
+  public function subject(): BelongsTo
   {
-    return $this->hasMany(Subject::class);
+      return $this->belongsTo(Subject::class, 'subject_id', 'id');
   }
 }

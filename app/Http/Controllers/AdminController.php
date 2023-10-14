@@ -391,7 +391,6 @@ class AdminController extends Controller
     return response()->json([
       'data' => [
         $validated = $request->validated(),
-
         $info = array(
           'gender' => $validated['gender'],
           'blood_group' => $validated['blood_group'],
@@ -755,6 +754,8 @@ class AdminController extends Controller
   {
     return response()->json([
       'data' => [
+        //$sections = Section::get()->where('school_id', 1),
+
         $validated = $request->validated(),
         'exam' => Exam::create([
           'name' => $validated['name'],
@@ -763,8 +764,8 @@ class AdminController extends Controller
           'ending_time' => $validated['ending_time'],
           'total_marks' => $validated['total_marks'],
           'status' => 'pending',
-          'class_id' => '1',
-          'section_id' => '1',
+          'class_id' => $validated['class_id'],
+          'section_id' => $validated['section_id'],
           'school_id' => '1'
         ]),
       ],

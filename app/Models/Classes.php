@@ -32,13 +32,10 @@ class Classes extends Model
         return $this->belongsTo(School::class);
     }
 
-    public function users(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+    protected $with = ['section'];
 
-    public function exam(): HasMany
+    public function section(): BelongsTo
     {
-        return $this->hasMany(Exam::class);
+        return $this->belongsTo(Section::class, 'section_id', 'id');
     }
 }
