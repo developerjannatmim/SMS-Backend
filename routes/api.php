@@ -90,6 +90,17 @@ Route::controller(AdminController::class)->group(function () {
     });
   });
 
+//Class Room routes
+Route::group(['prefix' => 'classRooms'], function () {
+  Route::get('', 'classRoom_list');
+  Route::post('', 'classRoom_store');
+  Route::group(['prefix' => '{classRoom}'], function () {
+    Route::get('', 'classRoom_show');
+    Route::put('', 'classRoom_update');
+    Route::delete('', 'classRoom_destroy');
+  });
+});
+
 //School route
 Route::group(['prefix' => 'schools'], function () {
   Route::get('', 'school_list');

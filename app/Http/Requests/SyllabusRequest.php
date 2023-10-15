@@ -33,7 +33,10 @@ class SyllabusRequest extends FormRequest
     {
         return [
             'title' => 'required',
-            'file' => 'required'
+            'file' => 'required',
+            'class_id' => 'required',
+            'subject_id' => 'required',
+            'section_id' => 'required'
         ];
     }
 }

@@ -6,6 +6,8 @@ use App\Http\Requests\AdminRequest;
 use App\Http\Requests\AdminUpdateRequest;
 use App\Http\Requests\ClassesRequest;
 use App\Http\Requests\ClassesUpdateRequest;
+use App\Http\Requests\ClassRoomRequest;
+use App\Http\Requests\ClassRoomUpdateRequest;
 use App\Http\Requests\ExaminationRequest;
 use App\Http\Requests\ExaminationUpdateRequest;
 use App\Http\Requests\GradeRequest;
@@ -560,7 +562,7 @@ class AdminController extends Controller
         $validated = $request->validated(),
         'subject' => Subject::create([
           'name' => $validated['name'],
-          'class_id' => '1',
+          'class_id' => $validated['class_id'],
           'school_id' => '1'
         ]),
       ],
@@ -624,7 +626,7 @@ class AdminController extends Controller
         $validation = $request->validated(),
         'classes' => Classes::create([
           'name' => $validation['name'],
-          'section_id' => '1',
+          'section_id' => $validation['section_id'],
           'school_id' => '1'
         ]),
       ],
@@ -837,11 +839,11 @@ class AdminController extends Controller
           'marks' => $validated['marks'],
           'grade_point' => $validated['grade_point'],
           'comment' => $validated['comment'],
-          'user_id' => '3',
-          'exam_id' => '1',
-          'class_id' => '1',
-          'section_id' => '1',
-          'subject_id' => '1',
+          'user_id' => $validated['user_id'],
+          'exam_id' => $validated['exam_id'],
+          'class_id' => $validated['class_id'],
+          'section_id' => $validated['section_id'],
+          'subject_id' => $validated['subject_id'],
           'school_id' => '1'
         ]),
       ],
@@ -917,11 +919,11 @@ class AdminController extends Controller
           'starting_minute' => $validated['starting_minute'],
           'ending_hour' => $validated['ending_hour'],
           'ending_minute' => $validated['ending_minute'],
-          'routine_creator' => '2',
-          'class_id' => '1',
-          'subject_id' => '1',
-          'section_id' => '1',
-          'room_id' => '1',
+          'routine_creator' => $validated['routine_creator'],
+          'class_id' => $validated['class_id'],
+          'subject_id' => $validated['subject_id'],
+          'section_id' => $validated['section_id'],
+          'room_id' => $validated['room_id'],
           'school_id' => '1'
         ]),
       ],
@@ -989,9 +991,9 @@ class AdminController extends Controller
         'syllabus' => Syllabus::create([
           'title' => $validated['title'],
           'file' => $validated['file'],
-          'class_id' => '1',
-          'subject_id' => '13',
-          'section_id' => '1',
+          'class_id' => $validated['class_id'],
+          'subject_id' => $validated['subject_id'],
+          'section_id' => $validated['section_id'],
           'school_id' => '1'
         ]),
       ],
@@ -1103,5 +1105,66 @@ class AdminController extends Controller
     ]);
   }
 
+  //Class Room
+  public function classRoom_list(Request $request): JsonResponse
+  {
+    return response()->json([
+      'data' => [
+        'classRoom' => ClassRoom::get(
+          $column = [
+            'id',
+            'name',
+          ],
+        ),
+      ],
+      'message' => 'classRoom List Created',
+    ]);
+  }
+
+  public function classRoom_store(ClassRoomRequest $request)
+  {
+    return response()->json([
+      'data' => [
+        $validated = $request->validated(),
+        'classRoom' => ClassRoom::create([
+          'name' => $validated['name'],
+          'school_id' => '1'
+        ]),
+      ],
+      'message' => 'classRoom store successful.',
+    ]);
+  }
+
+  public function classRoom_show(ClassRoom $classRoom)
+  {
+    return response()->json([
+      'data' => [
+        'classRoom' => $classRoom,
+      ],
+      'message' => 'classRoom show successful.',
+    ]);
+  }
+
+  public function classRoom_update(ClassRoomUpdateRequest $request, ClassRoom $classRoom)
+  {
+    $classRoom->update($request->validated());
+    return response()->json([
+      'data' => [
+        'classRoom' => $classRoom,
+      ],
+      'message' => 'classRoom update successful.',
+    ]);
+  }
+
+  public function classRoom_destroy(ClassRoom $classRoom)
+  {
+    $classRoom->delete();
+    return response()->json([
+      'data' => [
+        'classRoom' => $classRoom,
+      ],
+      'message' => 'classRoom deleted Successful.',
+    ]);
+  }
 
 }

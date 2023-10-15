@@ -1,0 +1,29 @@
+### List
+GET http://127.0.0.1:8000/api/classRooms
+Accept: application/json
+
+### Store
+POST http://127.0.0.1:8000/api/classRooms
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "103"
+}
+
+### Show
+GET http://127.0.0.1:8000/api/classRooms/3
+Accept: application/json
+
+### Update
+PUT http://127.0.0.1:8000/api/classRooms/4
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "104"
+}
+
+### Delete
+DELETE  http://127.0.0.1:8000/api/classRooms/5
+Accept: application/json

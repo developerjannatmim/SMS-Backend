@@ -37,7 +37,8 @@ class ExaminationRequest extends FormRequest
             'starting_time' => 'required',
             'ending_time' => 'required',
             'total_marks' => 'required',
-            'section_id' => 'required'
+            'section_id' => 'required',
+            'class_id' => 'required'
         ];
     }
 }

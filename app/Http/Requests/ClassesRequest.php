@@ -32,7 +32,8 @@ class ClassesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required'
+            'name' => 'required',
+            'section_id' => 'required'
         ];
     }
 }

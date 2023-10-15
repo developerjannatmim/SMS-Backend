@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SubjectRequest extends FormRequest
+class ClassRoomUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,6 @@ class SubjectRequest extends FormRequest
     {
         return true;
     }
-
     /**
    * Get the error messages for the defined validation rules.
    *
@@ -23,7 +22,6 @@ class SubjectRequest extends FormRequest
   {
     return [];
   }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -33,7 +31,6 @@ class SubjectRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'class_id' => 'required'
         ];
     }
 }
