@@ -97,7 +97,7 @@ class AdminController extends Controller
         $info = array(
           'gender' => $validated['gender'],
           'blood_group' => $validated['blood_group'],
-          'birthday' => date($validated['birthday']),
+          'birthday' => $validated['birthday'],
           'phone' => $validated['phone'],
           'address' => $validated['address'],
           'photo' => $validated['photo']
@@ -137,7 +137,7 @@ class AdminController extends Controller
         $info = array(
           'gender' => $validated['gender'],
           'blood_group' => $validated['blood_group'],
-          'birthday' => date($validated['birthday']),
+          'birthday' => $validated['birthday'],
           'phone' => $validated['phone'],
           'address' => $validated['address'],
           'photo' => $validated['photo']
@@ -148,7 +148,6 @@ class AdminController extends Controller
         'student' => $student->update([
           'name' => $validated['name'],
           'email' => $validated['email'],
-          'password' => bcrypt($validated['password']),
           'user_information' => $validated['user_information'],
           'role_id' => '3',
           'school_id' => '1'
@@ -295,7 +294,7 @@ class AdminController extends Controller
         $info = array(
           'gender' => $validated['gender'],
           'blood_group' => $validated['blood_group'],
-          'birthday' => date($validated['birthday']),
+          'birthday' => $validated['birthday'],
           'phone' => $validated['phone'],
           'address' => $validated['address'],
           'photo' => $validated['photo']
@@ -335,7 +334,7 @@ class AdminController extends Controller
         $info = array(
           'gender' => $validated['gender'],
           'blood_group' => $validated['blood_group'],
-          'birthday' => date($validated['birthday']),
+          'birthday' => $validated['birthday'],
           'phone' => $validated['phone'],
           'address' => $validated['address'],
           'photo' => $validated['photo']
@@ -346,7 +345,6 @@ class AdminController extends Controller
         'teacher' => $teacher->update([
           'name' => $validated['name'],
           'email' => $validated['email'],
-          'password' => bcrypt($validated['password']),
           'user_information' => $validated['user_information'],
           'role_id' => '2',
           'school_id' => '1'

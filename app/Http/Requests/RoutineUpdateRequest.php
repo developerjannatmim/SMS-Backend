@@ -37,7 +37,11 @@ class RoutineUpdateRequest extends FormRequest
             'starting_hour' => 'required',
             'starting_minute' => 'required',
             'ending_hour' => 'required',
-            'ending_minute' => 'required'
+            'ending_minute' => 'required',
+            'class_id' => 'required',
+            'subject_id' => 'required',
+            'section_id' => 'required',
+            'room_id' => 'required'
         ];
     }
 }
