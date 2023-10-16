@@ -196,7 +196,7 @@ class AdminController extends Controller
         $info = array(
           'gender' => $validated['gender'],
           'blood_group' => $validated['blood_group'],
-          'birthday' => date($validated['birthday']),
+          'birthday' => $validated['birthday'],
           'phone' => $validated['phone'],
           'address' => $validated['address'],
           'photo' => $validated['photo']
@@ -236,7 +236,7 @@ class AdminController extends Controller
         $info = array(
           'gender' => $validated['gender'],
           'blood_group' => $validated['blood_group'],
-          'birthday' => date($validated['birthday']),
+          'birthday' => $validated['birthday'],
           'phone' => $validated['phone'],
           'address' => $validated['address'],
           'photo' => $validated['photo']
@@ -247,7 +247,6 @@ class AdminController extends Controller
         'parent' => $parent->update([
           'name' => $validated['name'],
           'email' => $validated['email'],
-          'password' => bcrypt($validated['password']),
           'user_information' => $validated['user_information'],
           'role_id' => '4',
           'school_id' => '1'
@@ -408,7 +407,7 @@ class AdminController extends Controller
           'birthday' => $validated['birthday'],
           'phone' => $validated['phone'],
           'address' => $validated['address'],
-          'image' => $validated['image']
+          'photo' => $validated['photo']
         ),
         $validated['user_information'] = json_encode($info),
 
@@ -446,7 +445,7 @@ class AdminController extends Controller
         $info = array(
           'gender' => $validated['gender'],
           'blood_group' => $validated['blood_group'],
-          'birthday' => date($validated['birthday']),
+          'birthday' => $validated['birthday'],
           'phone' => $validated['phone'],
           'address' => $validated['address'],
           'photo' => $validated['photo']
@@ -457,7 +456,6 @@ class AdminController extends Controller
         'admin' => $admin->update([
           'name' => $validated['name'],
           'email' => $validated['email'],
-          'password' => bcrypt($validated['password']),
           'user_information' => $validated['user_information'],
           'role_id' => '1',
           'school_id' => '1'
@@ -658,7 +656,11 @@ class AdminController extends Controller
     $class->update($request->validated());
     return response()->json([
       'data' => [
-        'classes' => $class,
+        'classes' => $class->update([
+          'name' => $request['name'],
+          'section_id' => $request['section_id'],
+          'school_id' => '1'
+        ]),
       ],
       'message' => 'class update successful.',
     ]);

@@ -35,7 +35,7 @@ class AdminRequest extends FormRequest
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required|min:6',
-            'image' => 'required',
+            'photo' => 'required',
             'gender' => 'required',
             'blood_group' => 'required',
             'birthday' => 'required',
