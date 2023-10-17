@@ -30,11 +30,11 @@ class Routine extends Model
     ];
 
     protected $with = [
-			'section',
-			'subject',
-			'class',
-			'routine_creator',
-			'room'
+        'section',
+        'subject',
+        'class',
+        'routine_creator',
+        'room'
     ];
 
     public function section(): BelongsTo

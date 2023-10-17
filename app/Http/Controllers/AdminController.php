@@ -390,14 +390,12 @@ class AdminController extends Controller
     return response()->json([
       'data' => [
         $validated = $request->validated(),
-        // if (!empty($validated['photo'])) {
-        //   $file = $validated['photo'];
-        //   $filename = time() . '-' . $file->getClientOriginalExtension();
-        //   $file->move('admin-images/', $filename);
-        //   $photo = $filename;
-        // } else {
-        //   $photo = '';
-        // }
+
+          $file = $validated['photo'],
+          $filename = time() . '-' . $file,
+          //$file->move('admin-images/', $filename),
+          $photo = $filename,
+
 
         $info = array(
           'gender' => $validated['gender'],
@@ -405,7 +403,7 @@ class AdminController extends Controller
           'birthday' => $validated['birthday'],
           'phone' => $validated['phone'],
           'address' => $validated['address'],
-          'photo' => $validated['photo']
+          'photo' => $photo
         ),
         $validated['user_information'] = json_encode($info),
 
