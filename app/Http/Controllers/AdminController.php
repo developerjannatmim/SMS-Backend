@@ -391,10 +391,10 @@ class AdminController extends Controller
       'data' => [
         $validated = $request->validated(),
 
-          $file = $validated['photo'],
-          $filename = time() . '-' . $file,
-          //$file->move('admin-images/', $filename),
-          $photo = $filename,
+          // $file = $validated['photo'],
+          // $filename = time() . '-' . $file,
+          // //$file->move('admin-images/', $filename),
+          // $photo = $filename,
 
 
         $info = array(
@@ -403,7 +403,7 @@ class AdminController extends Controller
           'birthday' => $validated['birthday'],
           'phone' => $validated['phone'],
           'address' => $validated['address'],
-          'photo' => $photo
+          'photo' => $validated['photo'],
         ),
         $validated['user_information'] = json_encode($info),
 
