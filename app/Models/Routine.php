@@ -33,7 +33,7 @@ class Routine extends Model
         'section',
         'subject',
         'class',
-        'routine_creator',
+        'creator',
         'room'
     ];
 
@@ -57,7 +57,7 @@ class Routine extends Model
         return $this->belongsTo(ClassRoom::class, 'room_id', 'id');
     }
 
-    public function routine_creator(): BelongsTo
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'routine_creator', 'id');
     }
