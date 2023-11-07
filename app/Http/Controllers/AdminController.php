@@ -225,7 +225,7 @@ class AdminController extends Controller
     ]);
   }
 
-  public function parent_update(ParentUpdateRequest $request, User $parent )
+  public function parent_update(ParentUpdateRequest $request, User $parent)
   {
     // $parent->update($request->validated());
     return response()->json([
@@ -387,35 +387,34 @@ class AdminController extends Controller
 
   public function admin_store(AdminRequest $request)
   {
+    $validation = $request->validated();
+
+    $file = $validation['photo'];
+    $filename = time() . '-' . $file->getClientOriginalExtension();
+    $file->move('admin-images/', $filename);
+    $photo = $filename;
+
+    $info = array(
+      'gender' => $validation['gender'],
+      'blood_group' => $validation['blood_group'],
+      'birthday' => $validation['birthday'],
+      'phone' => $validation['phone'],
+      'address' => $validation['address'],
+      'photo' => $photo,
+    );
+    $validation['user_information'] = json_encode($info);
+
+    $admin = User::create([
+      'name' => $validation['name'],
+      'email' => $validation['email'],
+      'password' => bcrypt($validation['password']),
+      'user_information' => $validation['user_information'],
+      'role_id' => '1',
+      'school_id' => '1',
+    ]);
     return response()->json([
-      'data' => [
-        $validated = $request->validated(),
-
-          // $file = $validated['photo'],
-          // $filename = time() . '-' . $file,
-          // //$file->move('admin-images/', $filename),
-          // $photo = $filename,
-
-
-        $info = array(
-          'gender' => $validated['gender'],
-          'blood_group' => $validated['blood_group'],
-          'birthday' => $validated['birthday'],
-          'phone' => $validated['phone'],
-          'address' => $validated['address'],
-          'photo' => $validated['photo'],
-        ),
-        $validated['user_information'] = json_encode($info),
-
-        'admin' => User::create([
-          'name' => $validated['name'],
-          'email' => $validated['email'],
-          'password' => bcrypt($validated['password']),
-          'user_information' => $validated['user_information'],
-          'role_id' => '1',
-          'school_id' => '1'
-        ]),
-      ],
+      'data' => $admin,
+      'status' => 200,
       'message' => 'Admin store successful.',
     ]);
 
@@ -734,7 +733,7 @@ class AdminController extends Controller
       'message' => 'section deleted Successful.',
     ]);
   }
- //Section end
+  //Section end
 
   //Exam
   public function exam_list(Request $request): JsonResponse

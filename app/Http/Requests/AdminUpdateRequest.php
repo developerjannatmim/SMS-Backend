@@ -39,7 +39,7 @@ class AdminUpdateRequest extends FormRequest
       'blood_group' => 'required',
       'birthday' => 'required',
       'phone' => 'required',
-      'address' => 'required'
+      'address' => 'required',
     ];
   }
 }
