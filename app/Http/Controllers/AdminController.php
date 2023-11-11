@@ -94,14 +94,20 @@ class AdminController extends Controller
       'data' => [
         $validated = $request->validated(),
 
+        $file = $validated['photo'],
+        $filename = time() . '-' . $file->getClientOriginalExtension(),
+        $file->move('student-images/', $filename),
+        $photo = $filename,
+
         $info = array(
           'gender' => $validated['gender'],
           'blood_group' => $validated['blood_group'],
           'birthday' => $validated['birthday'],
           'phone' => $validated['phone'],
           'address' => $validated['address'],
-          'photo' => $validated['photo']
+          'photo' => $photo,
         ),
+
         $validated['user_information'] = json_encode($info),
 
         'student' => User::create([
@@ -113,7 +119,7 @@ class AdminController extends Controller
           'school_id' => '1'
         ]),
       ],
-      'message' => 'student store successful.',
+      'message' => 'Student store successful.',
     ]);
   }
 
@@ -192,14 +198,20 @@ class AdminController extends Controller
       'data' => [
         $validated = $request->validated(),
 
+        $file = $validated['photo'],
+        $filename = time() . '-' . $file->getClientOriginalExtension(),
+        $file->move('parent-images/', $filename),
+        $photo = $filename,
+
         $info = array(
           'gender' => $validated['gender'],
           'blood_group' => $validated['blood_group'],
           'birthday' => $validated['birthday'],
           'phone' => $validated['phone'],
           'address' => $validated['address'],
-          'photo' => $validated['photo']
+          'photo' => $photo,
         ),
+
         $validated['user_information'] = json_encode($info),
 
         'parent' => User::create([
@@ -211,7 +223,7 @@ class AdminController extends Controller
           'school_id' => '1'
         ]),
       ],
-      'message' => 'parent store successful.',
+      'message' => 'Parent store successful.',
     ]);
   }
 
@@ -227,7 +239,6 @@ class AdminController extends Controller
 
   public function parent_update(ParentUpdateRequest $request, User $parent)
   {
-    // $parent->update($request->validated());
     return response()->json([
       'data' => [
         $validated = $request->validated(),
@@ -287,9 +298,15 @@ class AdminController extends Controller
 
   public function teacher_store(TeacherRequest $request)
   {
+
     return response()->json([
       'data' => [
         $validated = $request->validated(),
+
+        $file = $validated['photo'],
+        $filename = time() . '-' . $file->getClientOriginalExtension(),
+        $file->move('teacher-images/', $filename),
+        $photo = $filename,
 
         $info = array(
           'gender' => $validated['gender'],
@@ -297,8 +314,9 @@ class AdminController extends Controller
           'birthday' => $validated['birthday'],
           'phone' => $validated['phone'],
           'address' => $validated['address'],
-          'photo' => $validated['photo']
+          'photo' => $photo,
         ),
+
         $validated['user_information'] = json_encode($info),
 
         'teacher' => User::create([
@@ -310,7 +328,7 @@ class AdminController extends Controller
           'school_id' => '1'
         ]),
       ],
-      'message' => 'teacher store successful.',
+      'message' => 'Teacher store successful.',
     ]);
   }
 
@@ -387,34 +405,35 @@ class AdminController extends Controller
 
   public function admin_store(AdminRequest $request)
   {
-    $validation = $request->validated();
-
-    $file = $validation['photo'];
-    $filename = time() . '-' . $file->getClientOriginalExtension();
-    $file->move('admin-images/', $filename);
-    $photo = $filename;
-
-    $info = array(
-      'gender' => $validation['gender'],
-      'blood_group' => $validation['blood_group'],
-      'birthday' => $validation['birthday'],
-      'phone' => $validation['phone'],
-      'address' => $validation['address'],
-      'photo' => $photo,
-    );
-    $validation['user_information'] = json_encode($info);
-
-    $admin = User::create([
-      'name' => $validation['name'],
-      'email' => $validation['email'],
-      'password' => bcrypt($validation['password']),
-      'user_information' => $validation['user_information'],
-      'role_id' => '1',
-      'school_id' => '1',
-    ]);
     return response()->json([
-      'data' => $admin,
-      'status' => 200,
+      'data' => [
+        $validated = $request->validated(),
+
+        $file = $validated['photo'],
+        $filename = time() . '-' . $file->getClientOriginalExtension(),
+        $file->move('admin-images/', $filename),
+        $photo = $filename,
+
+        $info = array(
+          'gender' => $validated['gender'],
+          'blood_group' => $validated['blood_group'],
+          'birthday' => $validated['birthday'],
+          'phone' => $validated['phone'],
+          'address' => $validated['address'],
+          'photo' => $photo,
+        ),
+
+        $validated['user_information'] = json_encode($info),
+
+        'admin' => User::create([
+          'name' => $validated['name'],
+          'email' => $validated['email'],
+          'password' => bcrypt($validated['password']),
+          'user_information' => $validated['user_information'],
+          'role_id' => '1',
+          'school_id' => '1',
+        ]),
+      ],
       'message' => 'Admin store successful.',
     ]);
 
