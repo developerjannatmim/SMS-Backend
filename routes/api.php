@@ -110,6 +110,7 @@ Route::group(['prefix' => 'schools'], function () {
     Route::delete('', 'school_destroy');
   });
 });
+
   // Route::get('admin/school/info', 'school_edit')->name('admin.school.info');
   // Route::post('admin/school/update', 'school_update')->name('admin.school.update');
 
@@ -169,7 +170,7 @@ Route::group(['prefix' => 'schools'], function () {
   });
 
   //Section
-  //Section list routes
+  //Section routes
     Route::group(['prefix' => 'sections'], function () {
       Route::get('', 'section_list');
       Route::post('', 'section_store');
@@ -179,6 +180,7 @@ Route::group(['prefix' => 'schools'], function () {
         Route::delete('', 'section_destroy');
       });
     });
+    
   // Route::get('admin/section/edit/{id}', 'edit_section')->name('admin.edit.section');
   // Route::post('admin/section/update/{id}', 'section_update')->name('admin.update.section');
 
