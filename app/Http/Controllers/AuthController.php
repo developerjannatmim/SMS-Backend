@@ -59,9 +59,24 @@ class AuthController extends Controller
           ]);
         } else {
           $token = $user->createToken($user->email . '_Token')->plainTextToken;
+          $user_info = User::where('id', $user->id)->value('user_information');
+          $gender = json_decode($user_info)->gender;
+          $birthday = json_decode($user_info)->birthday;
+          $phone = json_decode($user_info)->phone;
+          $photo = json_decode($user_info)->photo;
+          $blood_group = json_decode($user_info)->blood_group;
+          $address = json_decode($user_info)->address;
           return response()->json([
             'status' => 200,
             'token' => $token,
+            'auth_name' => $user->name,
+            'auth_email' => $user->email,
+            'gender' => $gender,
+            'phone' => $phone,
+            'address' => $address,
+            'birthday' => $birthday,
+            'photo' => $photo,
+            'blood_group' => $blood_group,
             'message' => 'Logged In successful.'
           ]);
         }
