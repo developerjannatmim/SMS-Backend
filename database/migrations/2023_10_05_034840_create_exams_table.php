@@ -21,9 +21,7 @@ return new class extends Migration
             $table->foreign('school_id')->references('id')->on('schools');
             $table->string('name');
             $table->string('exam_type');
-            $table->string('starting_date');
             $table->string('starting_time');
-            $table->string('ending_date');
             $table->string('ending_time');
             $table->float('total_marks');
             $table->string('status');
