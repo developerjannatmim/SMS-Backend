@@ -67,7 +67,6 @@ class AdminController extends Controller
     //
   }
 
-
   //Student
   public function student_list(Request $request): JsonResponse
   {

@@ -9,33 +9,33 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Classes extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name',
-        'section_id',
-        'school_id'
-    ];
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var array
+   */
+  protected $fillable = [
+    'name',
+    'section_id',
+    'school_id',
+  ];
 
-    public function getNameAttribute( $value )
-    {
-        return $this->attributes[ 'name' ] = ucfirst( $value );
-    }
+  public function getNameAttribute($value)
+  {
+    return $this->attributes['name'] = ucfirst($value);
+  }
 
-    public function school(): BelongsTo
-    {
-        return $this->belongsTo(School::class);
-    }
+  // public function school(): BelongsTo
+  // {
+  //   return $this->belongsTo(School::class);
+  // }
 
-    protected $with = ['section'];
+  protected $with = ['section'];
 
-    public function section(): BelongsTo
-    {
-        return $this->belongsTo(Section::class, 'section_id', 'id');
-    }
+  public function section(): BelongsTo
+  {
+    return $this->belongsTo(Section::class, 'section_id', 'id');
+  }
 }

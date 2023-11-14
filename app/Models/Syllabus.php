@@ -28,15 +28,15 @@ class Syllabus extends Model
     'school_id'
   ];
 
-  public function school(): BelongsTo
-  {
-    return $this->belongsTo(School::class);
-  }
+  // public function school(): BelongsTo
+  // {
+  //   return $this->belongsTo(School::class);
+  // }
 
   protected $with = [
     'section',
     'subject',
-    'class'
+    'class',
   ];
 
   public function section(): BelongsTo

@@ -8,25 +8,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Section extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name',
-        'school_id'
-    ];
+  /**
+   * The attributes that are mass assignable.
+   *
+   * @var array
+   */
+  protected $fillable = [
+    'name',
+    'school_id',
+  ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    public function school(): BelongsTo
-    {
-        return $this->belongsTo(School::class);
-    }
+  /**
+   * The attributes that should be hidden for arrays.
+   *
+   * @var array
+   */
+  // public function school(): BelongsTo
+  // {
+  //   return $this->belongsTo(School::class);
+  // }
 }

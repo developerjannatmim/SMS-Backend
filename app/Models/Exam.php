@@ -25,29 +25,28 @@ class Exam extends Model
         'status',
         'class_id',
         'section_id',
-        'school_id'
+        'school_id',
     ];
+    protected $with = ['section', 'class'];
     public function class(): BelongsTo
     {
         return $this->belongsTo(Classes::class, 'class_id', 'id');
     }
-
-    protected $with = ['section', 'class'];
 
     public function section(): BelongsTo
     {
         return $this->belongsTo(Section::class, 'section_id', 'id');
     }
 
-    public function subject(): HasMany
-    {
-        return $this->hasMany(Subjects::class);
-    }
+    // public function subject(): HasMany
+    // {
+    //     return $this->hasMany(Subjects::class);
+    // }
 
-    public function grade(): HasMany
-    {
-        return $this->hasMany(Grade::class);
-    }
+    // public function grade(): HasMany
+    // {
+    //     return $this->hasMany(Grade::class);
+    // }
 
     public function getStartingDateAttribute($date)
 	{

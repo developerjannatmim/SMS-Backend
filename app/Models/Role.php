@@ -8,19 +8,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Role extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $fillable = [
-		'name'
-	];
+  protected $fillable = [
+    'name',
+  ];
 
-    public function users(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+  // public function users(): BelongsTo
+  // {
+  //   return $this->belongsTo(User::class);
+  // }
 
-    public function getNameAttribute($value)
-	{
-		return $this->attributes['name'] = ucfirst($value);
-	}
+  public function getNameAttribute($value)
+  {
+    return $this->attributes['name'] = ucfirst($value);
+  }
 }

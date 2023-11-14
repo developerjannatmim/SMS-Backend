@@ -8,15 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ClassRoom extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'school_id'
-    ];
+  protected $fillable = [
+    'name',
+    'school_id',
+  ];
 
-    public function school(): BelongsTo
-    {
-        return $this->belongsTo(School::class, 'school_id', 'id');
-    }
+  // public function school(): BelongsTo
+  // {
+  //   return $this->belongsTo(School::class, 'school_id', 'id');
+  // }
 }
